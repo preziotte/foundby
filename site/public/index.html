@@ -108,6 +108,27 @@ gtag('js', new Date());
   .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 14px }
   .hero { position: relative; padding: 56px 0 24px }
   .hero-glow { position: absolute; left: -10%; top: -40px; width: 60%; height: 320px; background: radial-gradient(ellipse at 30% 30%, oklch(0.82 0.15 75 / 12%), transparent 65%); pointer-events: none; filter: blur(10px) }
+  /* Arrivals: the empty right side of the hero. Sources drift in from the edges, land on the site mark, get named. */
+  .arrivals { position: absolute; right: -40px; top: -10px; width: 480px; height: 430px; pointer-events: none; z-index: 0; overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 14%, #000 40%); -webkit-mask-image: linear-gradient(90deg, transparent 14%, #000 40%) }
+  .arrivals .field { position: absolute; inset: 0; mask-image: radial-gradient(ellipse 56% 56% at 50% 50%, #000 78%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 56% 56% at 50% 50%, #000 78%, transparent 100%) }
+  .arrivals svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible }
+  .arrivals .mark { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px }
+  .arrivals .mark svg { position: static; width: 44px; height: 44px; display: block }
+  .arrivals .ring { position: absolute; inset: 8px; border-radius: 50%; border: 1px solid var(--primary); opacity: 0 }
+  .arrivals .ring.go { animation: arrRing .9s cubic-bezier(.2,.7,.2,1) both }
+  @keyframes arrRing { from { opacity: .7; transform: scale(.6) } to { opacity: 0; transform: scale(2.6) } }
+  .arrivals .mark circle.c { transition: r .25s } .arrivals .mark.hit circle.c { r: 3.4 }
+  .arrivals .arr-line { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); opacity: 0; animation: arrLine 3.6s linear both }
+  @keyframes arrLine { 0% { stroke-dashoffset: var(--len); opacity: 0 } 8% { opacity: .7 } 30% { stroke-dashoffset: 0; opacity: .7 } 60% { opacity: .7 } 100% { opacity: 0 } }
+  .arrivals .arr-dot { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 10px var(--primary); opacity: 0;
+    animation: arrDot 3.6s cubic-bezier(.5,0,.8,.4) both }
+  @keyframes arrDot { 0% { transform: translate(var(--dx), var(--dy)); opacity: 0 } 8% { opacity: 1 } 30% { transform: translate(0, 0); opacity: 1 } 33% { transform: scale(2.2); opacity: 0 } 100% { opacity: 0 } }
+  .arrivals .arr-label { position: absolute; font-family: var(--mono); font-size: 11.5px; letter-spacing: .02em; white-space: nowrap; color: var(--muted); opacity: 0; animation: arrLabel 3.6s linear both }
+  @keyframes arrLabel { 0% { opacity: 0; transform: translateY(3px) } 8% { opacity: 1; transform: none } 30% { color: var(--muted) } 32% { color: var(--primary); opacity: 1 } 62% { color: var(--primary); opacity: 1 } 100% { opacity: 0; color: var(--muted) } }
+  .arrivals .still .arr-line, .arrivals .still .arr-label { animation: none; opacity: .5; stroke-dashoffset: 0 } .arrivals .still .arr-dot { display: none }
+  .hero .eyebrow, .hero h1, .hero .lede { position: relative; z-index: 1 }
+  @media (max-width: 980px) { .arrivals { display: none } }
   h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 20px; max-width: 760px; text-wrap: balance }
   .lede { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 0 36px }
 
@@ -227,6 +248,7 @@ gtag('js', new Date());
 
   <section class="hero">
     <div class="hero-glow" aria-hidden="true"></div>
+    <div class="arrivals" id="arrivals" aria-hidden="true"><div class="field" id="arrField"></div></div>
     <p class="eyebrow rise" style="--i:0">Free · open source · runs in your coding agent</p>
     <h1 class="rise" style="--i:1">Ask your coding agent how people find your site.</h1>
     <p class="lede rise" style="--i:2">foundby finds every place people arrive from: referrers, AI assistants, link previews, web mentions. It remembers them in your repo, tells you only what is new, and looks up each new one so you know what it is.</p>
@@ -410,6 +432,41 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
       if (i < text.length) setTimeout(tick, text[i - 1] === ' ' ? 55 : 28);
       else setTimeout(function () { you.classList.remove('typing'); between.classList.remove('pending'); between.classList.add('flow'); setTimeout(function () { between.classList.remove('flow'); agent.classList.add('show'); setTimeout(function () { after.classList.remove('pending'); }, 900); }, 1500); }, 450);
     }, 700);
+  })();
+</script>
+<script>
+  (function () {
+    var field = document.getElementById('arrField'); if (!field) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var names = ['chatgpt.com', 'unfurl:Discord', 'news.ycombinator.com', 'perplexity.ai', 'duckduckgo.com', 'github.com', 'reddit.com', 'unfurl:Slack', 'claude.ai', 'bing.com', 'in-app:Instagram', 'youtube.com', 'kagi.com', 'mastodon.social', 'lobste.rs', 'unfurl:iMessage'];
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); field.appendChild(svg);
+    var mark = document.createElement('div'); mark.className = 'mark';
+    mark.innerHTML = '<span class="ring" id="arrRing"></span><svg viewBox="0 0 24 24" fill="none"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.6" stroke-linecap="round" opacity=".75"/><circle class="c" cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>';
+    field.appendChild(mark);
+    var ring = mark.querySelector('.ring'), cx, cy, i = Math.floor(Math.random() * names.length), lastA = Math.random() * 4.0;
+    function size() { cx = field.clientWidth * 0.52; cy = field.clientHeight * 0.52; mark.style.left = cx + 'px'; mark.style.top = cy + 'px'; }
+    size(); window.addEventListener('resize', size);
+    function spawn(still) {
+      /* Walk an arc that skips the headline side, a third of it per step so neighbours never collide. */
+      lastA = (lastA + 1.34 + Math.random() * 0.1) % 4.0; var a = lastA - 2.0;
+      var r = 105 + Math.random() * 50, dx = Math.cos(a) * r, dy = Math.sin(a) * r * 0.8;
+      var g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); if (still) g.setAttribute('class', 'still');
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('class', 'arr-line'); line.setAttribute('x1', cx + dx); line.setAttribute('y1', cy + dy); line.setAttribute('x2', cx); line.setAttribute('y2', cy);
+      line.style.setProperty('--len', Math.hypot(dx, dy)); g.appendChild(line); svg.appendChild(g);
+      var wrap = document.createElement('div'); if (still) wrap.className = 'still';
+      var dot = document.createElement('span'); dot.className = 'arr-dot'; dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+      dot.style.setProperty('--dx', dx + 'px'); dot.style.setProperty('--dy', dy + 'px');
+      var label = document.createElement('span'); label.className = 'arr-label'; label.textContent = names[i++ % names.length];
+      label.style.left = (cx + dx) + 'px'; label.style.top = (cy + dy + (dy < 0 ? -22 : 10)) + 'px'; label.style.marginLeft = '-70px'; label.style.width = '140px'; label.style.textAlign = 'center';
+      wrap.appendChild(dot); wrap.appendChild(label); field.appendChild(wrap);
+      if (still) return;
+      setTimeout(function () { ring.classList.remove('go'); void ring.offsetWidth; ring.classList.add('go'); mark.classList.add('hit'); setTimeout(function () { mark.classList.remove('hit'); }, 500); }, 1080);
+      setTimeout(function () { g.remove(); wrap.remove(); }, 3700);
+    }
+    if (reduce) { for (var k = 0; k < 5; k++) spawn(true); return; }
+    function loop() { if (document.visibilityState !== 'hidden') spawn(false); setTimeout(loop, 1200 + Math.random() * 400); }
+    setTimeout(loop, 600);
   })();
 </script>
 </body>
