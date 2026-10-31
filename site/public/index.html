@@ -135,7 +135,8 @@ gtag('js', new Date());
   .turn.agent { background: oklch(0.12 0.005 70); box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
   .turn.agent pre { margin: 0; padding: 24px 20px 18px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
   .turn.agent .k { color: var(--primary) } .turn.agent .d { color: var(--dim) } .turn.agent .u { color: var(--link) }
-  .turn.agent { transition: opacity .5s } .js .turn.agent:not(.show) { opacity: 0 } .js .turn.agent:not(.show) .ln { opacity: 0 }
+  .turn.agent { transition: opacity .5s } .js .turn.agent:not(.show) { opacity: .3 } .js .turn.agent:not(.show) .ln { opacity: 0 }
+  .hint { transition: opacity .6s } .js .hint.pending { opacity: 0 }
   .turn.agent.show .ln { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms) }
   .hint { color: var(--dim); font-size: 14px; margin: 16px 0 0 }
   .hint code { color: var(--fg); font-size: 13px; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 7px; margin: 0 1px }
@@ -254,7 +255,7 @@ gtag('js', new Date());
 
 <span class="ln" style="--i:8">  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</span></pre>
     </div>
-    <p class="hint rise" style="--i:4">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run. <code>/foundby open</code> shows the whole ledger as a page.</p>
+    <p class="hint pending" id="after">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run. <code>/foundby open</code> shows the whole ledger as a page.</p>
   </section>
 
   <section id="how">
@@ -372,7 +373,7 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
   (function () {
     document.documentElement.classList.add('js');
     var you = document.getElementById('you'), btn = document.getElementById('copyBtn'), label = document.getElementById('copyLabel');
-    var say = document.getElementById('say'), agent = document.getElementById('agent'), between = document.getElementById('between');
+    var say = document.getElementById('say'), agent = document.getElementById('agent'), between = document.getElementById('between'), after = document.getElementById('after');
     var text = 'Set up foundby.dev in this repo and tell me how people are finding this site.';
     var timer;
     function copy(e) {
@@ -390,14 +391,14 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
     // Once, on load: the prompt types itself, then the report arrives. The text is in the
     // DOM already, so without JS or with reduced motion the page is complete as served.
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) { between.classList.remove('pending'); agent.classList.add('show'); return; }
+    if (reduce) { between.classList.remove('pending'); after.classList.remove('pending'); agent.classList.add('show'); return; }
     say.textContent = '';
     you.classList.add('typing');
     var i = 0;
     setTimeout(function tick() {
       say.textContent = text.slice(0, ++i);
       if (i < text.length) setTimeout(tick, text[i - 1] === ' ' ? 55 : 28);
-      else setTimeout(function () { you.classList.remove('typing'); between.classList.remove('pending'); between.classList.add('flow'); setTimeout(function () { between.classList.remove('flow'); agent.classList.add('show'); }, 1500); }, 450);
+      else setTimeout(function () { you.classList.remove('typing'); between.classList.remove('pending'); between.classList.add('flow'); setTimeout(function () { between.classList.remove('flow'); agent.classList.add('show'); setTimeout(function () { after.classList.remove('pending'); }, 900); }, 1500); }, 450);
     }, 700);
   })();
 </script>
