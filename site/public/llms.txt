@@ -1,0 +1,21 @@
+# foundby
+
+> Ask your coding agent how people find your site. foundby is a free, open-source skill for Claude Code and other coding agents, plus a few Python scripts. It keeps a ledger in your repo of every distinct way a person has ever reached your site (referring hosts, AI assistants, link-preview platforms, in-app browsers, Google Analytics sources, backlinks and web mentions) and each run reports only what is new since the last one. The agent looks up each new host and records what it is.
+
+The prompt to give an agent: "Find out how people are finding my site with foundby.dev"
+
+## Links
+
+- [GitHub repository](https://github.com/preziotte/foundby): source, SKILL.md, install instructions (MIT)
+- [Sources](https://github.com/preziotte/foundby/blob/main/docs/sources.md): what each data source sees, what it costs, how to wire it
+- [agenttraffic](https://agenttraffic.io): the sibling tool that reads the same CDN logs and reports what AI agents did on a site
+
+## Key facts
+
+- Install: clone the repo into `.claude/skills/foundby` (per project) or symlink it into `~/.claude/skills/foundby` (every project). Python 3.10+.
+- Config is one `foundby.json` in the site's repo: site, aliases, own hosts, ledger path, optional Google Analytics 4, CloudFront edge logs and Bing Webmaster blocks.
+- Sources: mention search (Hacker News, GitHub code search, Bluesky, Lobsters, YouTube video descriptions, Reddit via a saved search), GA4 (sources, AI Assistant channel, in-app browsers, referring pages via custom dimensions), CloudFront logs (referrers without JavaScript, link unfurlers, AI live-fetch agents), Bing backlinks. Every source is optional and degrades alone.
+- `foundby.py doctor` reads the user's GA property and recommends which sources would add the most for that site.
+- State is two files in the user's repo (`docs/foundby.md` and `.json`). No hosted service, no account, no telemetry. Client IPs are never read from logs.
+- Hits are a magnitude (edge hits plus GA sessions overlap), never presented as sessions or visitors.
+- Commands: `/foundby setup`, `/foundby`, `/foundby open` in Claude Code; `foundby.py init|doctor|run|set|mention|render|view` from a shell.

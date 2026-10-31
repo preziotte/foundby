@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- The OG card. Screenshot with site/og-refresh.sh (headless system Chrome at 1200x630). -->
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:oklch(0.155 0.006 70);color:oklch(0.93 0.006 80);font-family:"Geist",ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .grid{position:absolute;inset:0;background-image:linear-gradient(oklch(1 0 0 / 3%) 1px,transparent 1px),linear-gradient(90deg,oklch(1 0 0 / 3%) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 70% 60% at 30% 20%,#000 20%,transparent 75%)}
+  .glow{position:absolute;left:-100px;top:-120px;width:700px;height:500px;background:radial-gradient(ellipse at 40% 40%,oklch(0.82 0.15 75 / 14%),transparent 65%);filter:blur(20px)}
+  .wrap{position:absolute;inset:0;padding:72px 80px;display:flex;flex-direction:column;justify-content:space-between}
+  .eyebrow{font-family:"Geist Mono",ui-monospace,monospace;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.82 0.15 75);display:flex;align-items:center;gap:14px}
+  .eyebrow svg{width:30px;height:30px}
+  h1{font-size:68px;line-height:1.06;letter-spacing:-.025em;font-weight:600;margin:0;max-width:980px}
+  .prompt{display:inline-flex;align-items:center;gap:16px;background:oklch(0.19 0.006 70);border:1px solid oklch(1 0 0 / 18%);border-radius:16px;padding:20px 26px;font-family:"Geist Mono",ui-monospace,monospace;font-size:24px;color:oklch(0.93 0.006 80);align-self:flex-start}
+  .prompt .q{color:oklch(0.82 0.15 75)}
+  .foot{display:flex;justify-content:space-between;font-size:20px;color:oklch(0.66 0.01 75)}
+  .foot b{color:oklch(0.93 0.006 80);font-weight:500}
+</style></head>
+<body><div class="grid"></div><div class="glow"></div>
+<div class="wrap">
+  <div class="eyebrow"><svg viewBox="0 0 24 24" fill="none"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".75"/><circle cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>foundby · free · open source</div>
+  <h1>Ask your coding agent how people find your site.</h1>
+  <div class="prompt"><span class="q">&gt;</span> Find out how people are finding my site with foundby.dev</div>
+  <div class="foot"><span>Referrers · AI assistants · link previews · web mentions, in a ledger you own</span><b>foundby.dev</b></div>
+</div></body></html>

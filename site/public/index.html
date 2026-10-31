@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foundby: ask your coding agent how people find your site</title>
+<meta name="description" content="Free, open-source skill for Claude Code and other coding agents. Keeps a ledger of every way people find your site (referrers, AI assistants, link previews, mentions) and reports only what is new.">
+<link rel="canonical" href="https://foundby.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="foundby">
+<meta property="og:title" content="Ask your coding agent how people find your site">
+<meta property="og:description" content="A free, open-source skill that keeps a ledger of every way people find your site and reports only what is new. Referrers, AI assistants, link previews, web mentions. Runs on your machine.">
+<meta property="og:url" content="https://foundby.dev/">
+<meta property="og:image" content="https://foundby.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ask your coding agent how people find your site">
+<meta name="twitter:description" content="A free, open-source skill that keeps a ledger of every way people find your site and reports only what is new.">
+<meta name="twitter:image" content="https://foundby.dev/og.png">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://foundby.dev/#software",
+      "name": "foundby",
+      "url": "https://foundby.dev/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux, Windows",
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+      "license": "https://opensource.org/licenses/MIT",
+      "codeRepository": "https://github.com/preziotte/foundby",
+      "description": "A skill for coding agents that keeps a ledger of every way people find a website and reports only what is new since the last run."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "What does foundby see that Google Analytics does not?",
+         "acceptedAnswer": {"@type": "Answer", "text": "Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union."}},
+        {"@type": "Question", "name": "Is anything sent to a server?",
+         "acceptedAnswer": {"@type": "Answer", "text": "No. There is no foundby service. The scripts run on your machine, call the public APIs and your own GA and CDN log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs."}},
+        {"@type": "Question", "name": "Do I need Google Analytics or CDN logs?",
+         "acceptedAnswer": {"@type": "Answer", "text": "No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. The doctor command looks at what you have and says which would add the most."}},
+        {"@type": "Question", "name": "Why does an agent need to be involved?",
+         "acceptedAnswer": {"@type": "Answer", "text": "The scripts find new hosts; the agent fetches each one and decides what it is: a tutorial worth a thank-you, a directory that listed you, a parked domain never to be shown again. That one-line note is what makes the ledger readable, and it is only cheap because the agent is already there."}}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: oklch(0.155 0.006 70); --card: oklch(0.19 0.006 70); --card-2: oklch(0.215 0.006 70);
+    --fg: oklch(0.93 0.006 80); --muted: oklch(0.66 0.01 75); --dim: oklch(0.5 0.01 75);
+    --border: oklch(1 0 0 / 9%); --border-2: oklch(1 0 0 / 16%);
+    --primary: oklch(0.82 0.15 75); --primary-fg: oklch(0.16 0.03 70); --primary-dim: oklch(0.82 0.15 75 / 14%);
+    --link: oklch(0.8 0.08 230);
+    --sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box }
+  html { font-family: var(--sans); scroll-behavior: smooth }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums }
+  a { color: var(--link); text-decoration: none } a:hover { text-decoration: underline }
+  ::selection { background: oklch(0.82 0.15 75 / 35%) }
+  code, pre, kbd { font-family: var(--mono) }
+  .page-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
+    background-size: 48px 48px; mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 20%, transparent 70%) }
+  .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 20px }
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0 }
+  .logo { display: flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 600; letter-spacing: -0.01em }
+  .logo svg { width: 22px; height: 22px }
+  nav a { color: var(--muted); margin-left: 22px; font-size: 14.5px } nav a:hover { color: var(--fg); text-decoration: none }
+  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 14px }
+  .hero { position: relative; padding: 56px 0 24px }
+  .hero-glow { position: absolute; left: -10%; top: -40px; width: 60%; height: 320px; background: radial-gradient(ellipse at 30% 30%, oklch(0.82 0.15 75 / 12%), transparent 65%); pointer-events: none; filter: blur(10px) }
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 20px; max-width: 760px; text-wrap: balance }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 640px; margin: 0 0 30px }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-bottom: 14px }
+  .prompt { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border-2); border-radius: 12px; padding: 14px 16px 14px 18px; font-family: var(--mono); font-size: 15px; cursor: pointer; text-align: left; color: var(--fg); max-width: 100%; transition: border-color .15s, box-shadow .15s }
+  .prompt:hover { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-dim) }
+  .prompt .q { color: var(--primary) }
+  .prompt .copy { font-family: var(--sans); font-size: 12.5px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; white-space: nowrap }
+  .prompt.done .copy { color: var(--primary); border-color: var(--primary) }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 18px; font-weight: 500; font-size: 15px; border: 1px solid var(--border-2); color: var(--fg); background: transparent; text-decoration: none }
+  .btn:hover { text-decoration: none; border-color: var(--fg) }
+  .btn.primary { background: var(--primary); color: var(--primary-fg); border-color: var(--primary) }
+  .btn.primary:hover { filter: brightness(1.05) }
+  .hint { color: var(--dim); font-size: 14px; margin: 0 0 44px }
+  .hint code { color: var(--muted); font-size: 13px }
+  .term { background: oklch(0.12 0.005 70); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
+  .term .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12.5px; color: var(--muted) }
+  .term .bar i { width: 10px; height: 10px; border-radius: 50%; background: oklch(0.35 0.01 70); display: inline-block } .term .bar i:first-child { background: oklch(0.6 0.15 25) }
+  .term pre { margin: 0; padding: 18px 20px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
+  .term .k { color: var(--primary) } .term .d { color: var(--dim) } .term .u { color: var(--link) }
+  section { padding: 64px 0 0 }
+  .section-head { display: flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); white-space: nowrap; margin: 0 0 14px }
+  .section-head::before { content: ''; width: 1.25rem; height: 2px; background: var(--primary); opacity: .8 }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: repeating-linear-gradient(90deg, oklch(1 0 0 / 18%) 0 2px, transparent 2px 7px) }
+  h2 { font-size: 1.7rem; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 12px; text-wrap: balance }
+  h3 { font-size: 1.05rem; margin: 0 0 6px; font-weight: 600 }
+  p { margin: 0 0 14px } .muted { color: var(--muted) }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px }
+  .card .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: .12em; color: var(--primary); margin-bottom: 8px }
+  .card p { color: var(--muted); font-size: 14.5px; margin: 0 }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top }
+  th { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500 }
+  td:first-child { font-weight: 500; white-space: nowrap } td { color: var(--muted) } td:first-child { color: var(--fg) }
+  .tbl { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto }
+  .faq details { border-bottom: 1px solid var(--border); padding: 14px 0 }
+  .faq summary { cursor: pointer; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 16px }
+  .faq summary::-webkit-details-marker { display: none } .faq summary::after { content: '+'; color: var(--primary); font-family: var(--mono) } .faq details[open] summary::after { content: '−' }
+  .faq p { color: var(--muted); margin: 10px 0 0; font-size: 15px }
+  pre.code { background: oklch(0.12 0.005 70); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; overflow-x: auto; color: oklch(0.85 0.006 80); margin: 0 0 12px }
+  footer { margin-top: 72px; padding: 28px 0 56px; border-top: 1px solid var(--border); color: var(--dim); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 22px }
+  footer a { color: var(--muted) }
+  .rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms) }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: reduce) { .rise { animation: none } }
+  @media (max-width: 640px) { nav a:not(:last-child) { display: none } .hero { padding-top: 32px } section { padding-top: 48px } }
+</style>
+</head>
+<body>
+<div class="page-grid" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/" aria-label="foundby">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".75"/><circle cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>
+      foundby
+    </a>
+    <nav>
+      <a href="#sources">Sources</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/preziotte/foundby">GitHub</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <p class="eyebrow rise" style="--i:0">Free · open source · runs in your coding agent</p>
+    <h1 class="rise" style="--i:1">Ask your coding agent how people find your site.</h1>
+    <p class="lede rise" style="--i:2">foundby keeps a ledger in your repo of every way a person has ever reached your site: referring hosts, AI assistants, link previews, in-app browsers, backlinks and web mentions. Each run reports only what is new, and your agent looks up every new one and writes down what it is.</p>
+    <div class="cta rise" style="--i:3">
+      <button class="prompt" id="prompt" type="button" aria-label="Copy the prompt">
+        <span><span class="q">&gt;</span> Find out how people are finding my site with foundby.dev</span>
+        <span class="copy" id="copyLabel">copy</span>
+      </button>
+    </div>
+    <p class="hint rise" style="--i:4">Paste it into Claude Code, Codex, Cursor or any agent that reads a <code>SKILL.md</code>. Or install by hand: <code>git clone https://github.com/preziotte/foundby .claude/skills/foundby</code></p>
+    <div class="term rise" style="--i:5">
+      <div class="bar"><i></i><i></i><i></i>&nbsp; /foundby</div>
+<pre>FOUNDBY · example.com · new since 2026-10-22 (7d window, 184 rows in ledger)
+
+  <span class="k">NEW</span>  blog      skinnypuppy.eu                              25  via edge
+  <span class="k">NEW</span>  video     youtube.com                                  3  via web  <span class="u">youtube.com/watch?v=…</span>
+  <span class="k">NEW</span>  forum     news.ycombinator.com                         9  via edge,web
+  <span class="k">NEW</span>  directory github:someone/awesome-music-tools           0  via web  <span class="u">github.com/someone/awesome-music-tools</span>
+  <span class="k">NEW</span>  unfurler  unfurl:Discord                              14  via edge
+  <span class="d">junk (3): 185.220.101.4, seo-tools.xyz, translate.goog</span>
+  <span class="k">PAGE</span> forum     reddit.com                                        <span class="u">reddit.com/r/WeAreTheMusicMakers/comments/…</span>
+  <span class="k">SURGE</span> search   duckduckgo.com                              41  was ~2.1/day
+
+  <span class="d">sources: edge 2026-10-22..2026-10-29 (168h) · ga 2026-10-22..2026-10-29 · mentions hn:1 github:4 bluesky:2 lobsters:0 youtube:3 · bing API returns no links for this site</span>
+
+  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</pre>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="section-head">How it works</div>
+    <h2>Scripts find the hosts. Your agent finds out what they are.</h2>
+    <p class="muted" style="max-width:680px">Mention trackers and backlink tools list hosts. They do not open each one, decide that this one is a Spanish AI-music tutorial worth a thank-you and that one is a parked domain never to be shown again, and write that into a file you own. That is the part that makes the report readable, and it is only cheap because the agent is already there.</p>
+    <div class="grid" style="margin-top:20px">
+      <div class="card"><div class="n">01 · remembers</div><h3>A ledger, not a dashboard</h3><p>Every host, agent and platform ever seen, with first-seen date, kind and a note, in <code>docs/foundby.md</code> next to your code. Each run covers exactly the gap since the last one. Junk surfaces once.</p></div>
+      <div class="card"><div class="n">02 · looks up</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
+      <div class="card"><div class="n">03 · yours</div><h3>No service, no account</h3><p>Runs on your machine with your credentials. State is two files in your repo. Client IPs are never read. Nothing is sent anywhere that you did not already pay for.</p></div>
+    </div>
+  </section>
+
+  <section id="sources">
+    <div class="section-head">Sources</div>
+    <h2>Every source is optional. Together they see what no one of them can.</h2>
+    <p class="muted" style="max-width:680px"><code>foundby doctor</code> reads your analytics property, prints the channel mix, and tells you which of these would add the most for your site. A site with only a domain still gets the mention search.</p>
+    <div class="tbl" style="margin-top:20px">
+      <table>
+        <thead><tr><th>Source</th><th>Sees</th><th>Blind to</th><th>Needs</th></tr></thead>
+        <tbody>
+          <tr><td>Mention search</td><td>Pages that talk about your site whether or not anyone clicked: Hacker News, GitHub code (awesome lists, READMEs), Bluesky, Lobsters, YouTube video descriptions, Reddit</td><td>X, Instagram, TikTok</td><td>Nothing. <code>gh auth login</code> for GitHub</td></tr>
+          <tr><td>Google Analytics 4</td><td>utm and gclid sources, GA's AI Assistant channel, in-app browsers (TikTok, Instagram), referring <em>pages</em> with three custom dimensions</td><td>Anything without JavaScript: agents, unfurlers, ad-blocked visitors</td><td>A service account on the property</td></tr>
+          <tr><td>CDN edge logs</td><td>Every request: referrers without JS, link unfurlers (each one a private share in Slack, Discord, iMessage), AI live-fetch agents (ChatGPT-User, Claude-User, Perplexity-User)</td><td>Native apps and email clients send no Referer</td><td>CloudFront standard logs in S3, the aws CLI</td></tr>
+          <tr><td>Bing Webmaster</td><td>The backlinks Bing knows about, via the only free backlink API</td><td>Most backlinks; often empty</td><td>An API key</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Setup, cost and blind spots of each, including the GA custom-dimension snippet, are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md">docs/sources.md</a>.</p>
+  </section>
+
+  <section id="use">
+    <div class="section-head">Without an agent</div>
+    <h2>The scripts work on their own.</h2>
+    <p class="muted" style="max-width:680px">Python 3.10+, standard library only (plus <code>cryptography</code> for the GA token). One <code>foundby.json</code> in your repo.</p>
+<pre class="code">git clone https://github.com/preziotte/foundby .claude/skills/foundby
+python3 .claude/skills/foundby/scripts/foundby.py init example.com
+python3 .claude/skills/foundby/scripts/foundby.py doctor
+python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
+python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
+python3 .claude/skills/foundby/scripts/foundby.py view</pre>
+  </section>
+
+  <section id="faq" class="faq">
+    <div class="section-head">FAQ</div>
+    <details open><summary>What does this see that Google Analytics does not?</summary><p>Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union.</p></details>
+    <details><summary>Is anything sent to a server?</summary><p>No. There is no foundby service. The scripts run on your machine, call the public APIs and your own analytics and log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs.</p></details>
+    <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
+    <details><summary>Why does an agent need to be involved?</summary><p>The scripts find new hosts. The agent fetches each one and decides what it is: a tutorial worth a thank-you, a directory that listed you, a parked domain never to be shown again. That one-line note is what makes the ledger readable, and it is only cheap because the agent is already there.</p></details>
+    <details><summary>What about AI agents crawling my site?</summary><p>foundby records the live-fetch agents, because a person was behind each one. For crawlers, training bots and the full picture of what AI agents do on your site, use <a href="https://agenttraffic.io">agenttraffic</a>, which reads the same logs. foundby is about people; agenttraffic is about agents.</p></details>
+    <details><summary>How accurate are the hit counts?</summary><p>They are a magnitude, not a count: edge hits plus GA sessions overlap. The point of the ledger is the first-seen date and the note, not the number.</p></details>
+  </section>
+
+  <footer>
+    <span>foundby is MIT licensed.</span>
+    <a href="https://github.com/preziotte/foundby">GitHub</a>
+    <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md">Sources</a>
+    <a href="https://agenttraffic.io">agenttraffic</a>
+    <a href="/llms.txt">llms.txt</a>
+    <span style="margin-left:auto">by <a href="https://preziotte.com">Mathew Preziotte</a></span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var btn = document.getElementById('prompt'), label = document.getElementById('copyLabel');
+    var text = 'Find out how people are finding my site with foundby.dev';
+    btn.addEventListener('click', function () {
+      var done = function () { btn.classList.add('done'); label.textContent = 'copied'; setTimeout(function () { btn.classList.remove('done'); label.textContent = 'copy'; }, 1600); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done); else done();
+    });
+  })();
+</script>
+</body>
+</html>
