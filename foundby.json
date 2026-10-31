@@ -24,7 +24,7 @@
     "property": "561722052",
     "key_file": "~/.config/gcloud/ga-mcp-key.json",
     "start": "2026-10-31",
-    "custom_dimensions": false
+    "custom_dimensions": true
   },
   "edge": {
     "kind": "cloudfront",
