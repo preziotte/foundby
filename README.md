@@ -58,30 +58,39 @@ In Claude Code, in your site's repo:
   people-shaped rows and records what they are.
 - `/foundby open` opens the ledger viewer in your browser.
 
-Without an agent, the scripts work on their own:
+Without an agent, the scripts run on their own. The agent's job is the lookup step
+(visiting each new host and writing the one-line note); without one, you do that with `set`.
 
 ```
+# write foundby.json, then check which sources are wired
 python3 .claude/skills/foundby/scripts/foundby.py init example.com
 python3 .claude/skills/foundby/scripts/foundby.py doctor
+
+# fetch, fold into docs/foundby.md, print what is new (scratch dir holds the raw pulls)
 python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
-python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Skinny Puppy fan site, links from an inner page"
+
+# record what a new host turned out to be
+python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
+
+# open the ledger viewer
 python3 .claude/skills/foundby/scripts/foundby.py view
 ```
 
 ## Sources
 
-Every source is optional and degrades alone. A site with nothing but a domain gets the
-mention search.
+Four sources, all optional. Each one sees something the others miss. A site with nothing
+but a domain gets the mention search.
 
-| Source | Sees | Needs |
-|---|---|---|
-| Mention search (HN, GitHub code, Bluesky, Lobsters, YouTube descriptions, Reddit) | pages that talk about you, clicked or not | nothing; `gh auth login` for GitHub |
-| Google Analytics 4 | utm sources, the AI Assistant channel, in-app browsers, referring pages | a service account on the property |
-| CDN edge logs (CloudFront) | referrers without JS, link unfurlers (private shares), AI live-fetch agents | logs in S3, aws CLI |
-| Bing Webmaster backlinks | the backlinks Bing knows | an API key |
+| Source | Sees | Blind to | Needs |
+|---|---|---|---|
+| Mention search (HN, GitHub, Bluesky, Lobsters, YouTube descriptions; Reddit with a manual step) | pages that talk about you, clicked or not | X, Instagram, TikTok | nothing; `gh auth login` for GitHub |
+| Google Analytics 4 | utm and gclid sources, the AI Assistant channel, in-app browsers; with three custom dimensions, the referring page | anything that does not run JavaScript | a service account on the property |
+| CloudFront logs | every request: link previews (private shares in Slack, Discord, iMessage), AI assistants fetching a page | apps that send no Referer (native apps, email clients) | standard logging to S3, aws CLI |
+| Bing Webmaster backlinks | the backlinks Bing knows about | most backlinks; often empty | an API key |
 
-`foundby.py doctor` reads your property and tells you which of these would add the most
-for your site. Setup, cost and blind spots of each are in [docs/sources.md](docs/sources.md).
+`foundby.py doctor` checks what you have wired and says what each missing source would add.
+With GA connected it also reads 90 days of channel mix. Setup, cost and blind spots of each
+are in [docs/sources.md](docs/sources.md).
 
 ## Why this and not a monitoring service
 

@@ -14,8 +14,8 @@ The prompt to give an agent: "Set up foundby.dev in this repo and tell me how pe
 
 - Install: clone the repo into `.claude/skills/foundby` (per project) or symlink it into `~/.claude/skills/foundby` (every project). Python 3.10+.
 - Config is one `foundby.json` in the site's repo: site, aliases, own hosts, ledger path, optional Google Analytics 4, CloudFront edge logs and Bing Webmaster blocks.
-- Sources: mention search (Hacker News, GitHub code search, Bluesky, Lobsters, YouTube video descriptions, Reddit via a saved search), GA4 (sources, AI Assistant channel, in-app browsers, referring pages via custom dimensions), CloudFront logs (referrers without JavaScript, link unfurlers, AI live-fetch agents), Bing backlinks. Every source is optional and degrades alone.
-- `foundby.py doctor` reads the user's GA property and recommends which sources would add the most for that site.
+- Sources: mention search (Hacker News, GitHub code search, Bluesky, Lobsters, YouTube video descriptions, Reddit with a manual step), GA4 (utm and gclid sources, AI Assistant channel, in-app browsers, referring pages via custom dimensions), CloudFront logs (link previews, AI assistants fetching pages, referrers without JavaScript), Bing backlinks. Every source is optional and degrades alone; a bare domain still gets the mention search.
+- `foundby.py doctor` checks which sources are wired and says what each missing one would add; with GA4 connected it also reads 90 days of channel mix to recommend.
 - State is two files in the user's repo (`docs/foundby.md` and `.json`). No hosted service, no account, no telemetry. Client IPs are never read from logs.
 - Hits are a magnitude (edge hits plus GA sessions overlap), never presented as sessions or visitors.
 - Commands: `/foundby setup`, `/foundby`, `/foundby open` in Claude Code; `foundby.py init|doctor|run|set|mention|render|view` from a shell.

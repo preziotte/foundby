@@ -96,6 +96,7 @@ gtag('js', new Date());
   a { color: var(--link); text-decoration: none } a:hover { text-decoration: underline }
   ::selection { background: oklch(0.82 0.15 75 / 35%) }
   code, pre, kbd { font-family: var(--mono) }
+  p code, td code { font-size: 0.86em; color: var(--fg); background: var(--card-2); border: 1px solid var(--border-2); border-radius: 5px; padding: 1px 5px }
   .page-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image: linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
     background-size: 48px 48px; mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 20%, transparent 70%) }
@@ -308,38 +309,47 @@ gtag('js', new Date());
 
   <section id="sources">
     <div class="section-head">Sources</div>
-    <h2>Every source is optional. Together they see what no one of them can.</h2>
-    <p class="muted" style="max-width:680px"><code>foundby doctor</code> reads your analytics property, prints the channel mix, and tells you which of these would add the most for your site. A site with only a domain still gets the mention search.</p>
+    <h2>Four sources, all optional. Each one sees something the others miss.</h2>
+    <p class="muted" style="max-width:680px">A site with nothing but a domain gets the mention search. The rest are worth adding when you already have them.</p>
     <div class="tbl" style="margin-top:20px">
       <table>
         <thead><tr><th>Source</th><th>Sees</th><th>Blind to</th><th>Needs</th></tr></thead>
         <tbody>
-          <tr><td>Mention search</td><td data-label="Sees">Pages that talk about your site whether or not anyone clicked: Hacker News, GitHub code (awesome lists, READMEs), Bluesky, Lobsters, YouTube video descriptions, Reddit</td><td data-label="Blind to">X, Instagram, TikTok</td><td data-label="Needs">Nothing. <code>gh auth login</code> for GitHub</td></tr>
-          <tr><td>Google Analytics 4</td><td data-label="Sees">utm and gclid sources, GA's AI Assistant channel, in-app browsers (TikTok, Instagram), referring <em>pages</em> with three custom dimensions</td><td data-label="Blind to">Anything without JavaScript: agents, unfurlers, ad-blocked visitors</td><td data-label="Needs">A service account on the property</td></tr>
-          <tr><td>CDN edge logs</td><td data-label="Sees">Every request: referrers without JS, link unfurlers (each one a private share in Slack, Discord, iMessage), AI live-fetch agents (ChatGPT-User, Claude-User, Perplexity-User)</td><td data-label="Blind to">Native apps and email clients send no Referer</td><td data-label="Needs">CloudFront standard logs in S3, the aws CLI</td></tr>
-          <tr><td>Bing Webmaster</td><td data-label="Sees">The backlinks Bing knows about, via the only free backlink API</td><td data-label="Blind to">Most backlinks; often empty</td><td data-label="Needs">An API key</td></tr>
+          <tr><td>Mention search</td><td data-label="Sees">Pages that talk about your site, whether or not anyone clicked: Hacker News, GitHub (awesome lists, READMEs), Bluesky, Lobsters, YouTube descriptions. Reddit with a manual step.</td><td data-label="Blind to">X, Instagram, TikTok</td><td data-label="Needs">Nothing. <code>gh auth login</code> for GitHub</td></tr>
+          <tr><td>Google Analytics 4</td><td data-label="Sees">utm and gclid sources, the AI Assistant channel, in-app browsers (TikTok, Instagram). With three custom dimensions, the referring page instead of just the host.</td><td data-label="Blind to">Anything that does not run JavaScript: agents, link previews, ad-blocked visitors</td><td data-label="Needs">A service account on the property</td></tr>
+          <tr><td>CloudFront logs</td><td data-label="Sees">Every request, JavaScript or not. Link previews when someone pastes your URL into Slack, Discord or iMessage, each one a private share. AI assistants fetching a page to answer a question.</td><td data-label="Blind to">Where a visit came from when the app sends no Referer: native apps, email clients</td><td data-label="Needs">Standard logging to S3, the aws CLI</td></tr>
+          <tr><td>Bing Webmaster</td><td data-label="Sees">The backlinks Bing knows about. The only backlink API with a free tier.</td><td data-label="Blind to">Most backlinks. Often returns nothing</td><td data-label="Needs">An API key</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="muted" style="margin-top:14px;font-size:14.5px">Setup, cost and blind spots of each, including the GA custom-dimension snippet, are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">docs/sources.md</a>.</p>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Not sure which to add? <code>foundby.py doctor</code> checks what you have wired and says what each missing source would add for your site. With GA connected it also reads 90 days of channel mix, so it can tell you, for example, that a large Direct share is probably link previews the edge logs would name. Setup, cost and blind spots are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">docs/sources.md</a>.</p>
   </section>
 
   <section id="use">
     <div class="section-head">Without an agent</div>
-    <h2>The scripts work on their own.</h2>
-    <p class="muted" style="max-width:680px">Python 3.10+, standard library only (plus <code>cryptography</code> for the GA token). One <code>foundby.json</code> in your repo. Cloning into <code>.claude/skills</code> is also the manual install for the agent.</p>
-<pre class="code">git clone https://github.com/preziotte/foundby .claude/skills/foundby
+    <h2>The scripts run on their own.</h2>
+    <p class="muted" style="max-width:680px">Python 3.10+ and the standard library, plus <code>cryptography</code> if you wire GA. Config is one <code>foundby.json</code> in your repo. The agent's job is the lookup step: visiting each new host and writing the one-line note. Without one, you do that with <code>set</code>.</p>
+<pre class="code"># install (the same clone is the manual install for the agent)
+git clone https://github.com/preziotte/foundby .claude/skills/foundby
+
+# write foundby.json, then check which sources are wired
 python3 .claude/skills/foundby/scripts/foundby.py init example.com
 python3 .claude/skills/foundby/scripts/foundby.py doctor
+
+# fetch, fold into docs/foundby.md, print what is new (scratch dir holds the raw pulls)
 python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
+
+# record what a new host turned out to be
 python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
+
+# open the ledger viewer
 python3 .claude/skills/foundby/scripts/foundby.py view</pre>
   </section>
 
   <section id="faq" class="faq">
     <div class="section-head">FAQ</div>
     <details open><summary>What will the prompt actually do to my repo?</summary><p>Your agent fetches foundby.dev, which points it at the GitHub repo and <code>SKILL.md</code>. It clones the skill into <code>.claude/skills/foundby</code>, writes a <code>foundby.json</code> with your domain, runs <code>doctor</code> to see which sources you already have credentials for, and asks before wiring any that need setup. Then it runs the first report and writes the ledger to <code>docs/foundby.md</code>. Every step is a plain Python script you can read first.</p></details>
-    <details><summary>Can I install it by hand, or use it without an agent?</summary><p>Yes. Clone the repo into <code>.claude/skills/foundby</code> and your agent picks it up as a skill. The scripts also run on their own from a shell with no agent at all: see <a href="#use">Without an agent</a>.</p></details>
+    <details><summary>Can I install it by hand, or use it without an agent?</summary><p>Yes to both. The clone command under <a href="#use">Without an agent</a> is the manual install, and the same scripts run from a shell with no agent at all.</p></details>
     <details><summary>What does this see that Google Analytics does not?</summary><p>Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union.</p></details>
     <details><summary>Is anything sent to a server?</summary><p>No. There is no foundby service. The scripts run on your machine, call the public APIs and your own analytics and log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs.</p></details>
     <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
