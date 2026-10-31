@@ -100,14 +100,14 @@ gtag('js', new Date());
   .page-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image: linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
     background-size: 48px 48px; mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 20%, transparent 70%) }
-  .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 20px }
-  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0 }
+  .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 24px }
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 26px 0 }
   .logo { display: flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 600; letter-spacing: -0.01em }
   .logo svg { width: 22px; height: 22px } .logo svg path { transition: opacity .2s } .logo svg circle { transition: r .25s cubic-bezier(.2,.7,.2,1) }
   .logo:hover { text-decoration: none } .logo:hover svg path { opacity: 1 } .logo:hover svg circle { r: 3.6 }
-  nav a { color: var(--muted); margin-left: 22px; font-size: 14.5px } nav a:hover { color: var(--fg); text-decoration: none }
-  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 14px }
-  .hero { position: relative; padding: 56px 0 24px }
+  nav a { color: var(--muted); margin-left: 26px; font-size: 14.5px } nav a:hover { color: var(--fg); text-decoration: none }
+  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 18px }
+  .hero { position: relative; padding: 80px 0 24px }
   .hero-glow { position: absolute; left: -10%; top: -40px; width: 60%; height: 320px; background: radial-gradient(ellipse at 30% 30%, oklch(0.82 0.15 75 / 12%), transparent 65%); pointer-events: none; filter: blur(10px) }
   /* Arrivals: the empty right side of the hero. Sources drift in from the edges, land on the site mark, get named. */
   .arrivals { position: absolute; right: -40px; top: -13px; width: 480px; height: 380px; pointer-events: none; z-index: 0; overflow: hidden;
@@ -141,13 +141,13 @@ gtag('js', new Date());
   .arrivals .still .arr-line, .arrivals .still .arr-label { animation: none; opacity: .5; stroke-dashoffset: 0 } .arrivals .still .arr-dot { display: none }
   .hero .eyebrow, .hero h1, .hero .lede { position: relative; z-index: 1 }
   @media (max-width: 980px) { .arrivals { display: none } }
-  h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 20px; max-width: 760px; text-wrap: balance }
-  .lede { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 0 56px }
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 24px; max-width: 760px; text-wrap: balance }
+  .lede { font-size: 1.15rem; line-height: 1.65; color: var(--muted); max-width: 620px; margin: 0 0 64px }
 
   /* The session: your turn (the prompt), then the agent's turn (the report). */
   .turn { position: relative; border: 1px solid var(--border-2); border-radius: 14px; background: var(--card) }
   .turn .who { position: absolute; top: -9px; left: 16px; font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); background: var(--bg); padding: 0 7px; line-height: 18px }
-  .turn.you { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 24px 20px 20px 24px; cursor: pointer; transition: border-color .15s, box-shadow .15s }
+  .turn.you { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px; padding: 28px 24px 24px 28px; cursor: pointer; transition: border-color .15s, box-shadow .15s }
   .turn.you:hover, .turn.you:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-dim) }
   .turn.you .say { flex: 1 1 360px; margin: 0; font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.012em; min-height: 1.4em }
   .turn.you .say::after { content: ''; display: inline-block; width: 2px; height: 1.05em; background: var(--primary); margin-left: 3px; vertical-align: -0.18em; opacity: 0 }
@@ -159,7 +159,7 @@ gtag('js', new Date());
   .btn.primary:hover { filter: brightness(1.05) }
   .btn svg { width: 16px; height: 16px; flex: none }
   .btn.copied { background: transparent; color: var(--primary); border-color: var(--primary) }
-  .between { display: flex; gap: 18px; align-items: flex-start; margin: 38px 0 42px 24px; color: var(--dim); font-size: 14.5px; line-height: 1.85; max-width: 720px; transition: opacity .6s }
+  .between { display: flex; gap: 20px; align-items: flex-start; margin: 44px 0 48px 28px; color: var(--dim); font-size: 14.5px; line-height: 1.85; max-width: 720px; transition: opacity .6s }
   .between::before { content: ''; flex: none; width: 2px; align-self: stretch; margin: 2px 0; background: linear-gradient(180deg, var(--border-2) 0 3px, transparent 3px 7px) 0 0 / 2px 7px repeat-y }
   .between.flow::before { background-image: linear-gradient(180deg, var(--muted) 0 3px, transparent 3px 7px); animation: flow .6s linear infinite }
   @keyframes flow { to { background-position: 0 7px } }
@@ -167,45 +167,45 @@ gtag('js', new Date());
   .between p { margin: 0 }
   .between code { color: var(--muted); font-size: 13px }
   .turn.agent { background: oklch(0.12 0.005 70); box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
-  .turn.agent pre { margin: 0; padding: 24px 20px 18px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
+  .turn.agent pre { margin: 0; padding: 28px 28px 24px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
   .turn.agent .k { color: var(--primary) } .turn.agent .d { color: var(--dim) } .turn.agent .u { color: var(--link) }
   .turn.agent { transition: opacity .5s } .js .turn.agent:not(.show) { opacity: .3 } .js .turn.agent:not(.show) .ln { opacity: 0 }
   .hint { transition: opacity .6s } .js .hint.pending { opacity: 0 }
   .turn.agent.show .ln { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms) }
-  .hint { color: var(--dim); font-size: 14px; margin: 16px 0 0 }
+  .hint { color: var(--dim); font-size: 14px; margin: 20px 0 0 }
   .hint code { color: var(--fg); font-size: 13px; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 7px; margin: 0 1px }
   code.cmd { color: var(--fg); font-size: 0.85em; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 8px; font-weight: 500 }
   .hint a { color: var(--dim); text-decoration: underline; text-decoration-color: var(--border-2); text-underline-offset: 3px } .hint a:hover { color: var(--muted); text-decoration-color: var(--muted) }
 
-  section { padding: 64px 0 0 }
-  .section-head { display: flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); white-space: nowrap; margin: 0 0 14px }
+  section { padding: 96px 0 0 }
+  .section-head { display: flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); white-space: nowrap; margin: 0 0 20px }
   .section-head::before { content: ''; width: 1.25rem; height: 2px; background: var(--primary); opacity: .8 }
   .section-head::after { content: ''; flex: 1; height: 1px; background: repeating-linear-gradient(90deg, oklch(1 0 0 / 18%) 0 2px, transparent 2px 7px) }
-  h2 { font-size: 1.7rem; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 12px; text-wrap: balance }
-  h3 { font-size: 1.05rem; margin: 0 0 6px; font-weight: 600 }
+  h2 { font-size: 1.7rem; line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 16px; text-wrap: balance }
+  h3 { font-size: 1.05rem; margin: 0 0 8px; font-weight: 600 }
   p { margin: 0 0 14px } .muted { color: var(--muted) }
-  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px }
-  .card .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: .12em; color: var(--primary); margin-bottom: 8px }
-  .card p { color: var(--muted); font-size: 14.5px; margin: 0 }
-  .viewer { background: var(--bg); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; margin-top: 28px; box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
-  .viewer .vbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--dim); background: oklch(0.13 0.005 70) }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 24px 22px }
+  .card .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: .12em; color: var(--primary); margin-bottom: 12px }
+  .card p { color: var(--muted); font-size: 14.5px; line-height: 1.65; margin: 0 }
+  .viewer { background: var(--bg); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; margin-top: 32px; box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
+  .viewer .vbar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--dim); background: oklch(0.13 0.005 70) }
   .viewer .vbar i { width: 10px; height: 10px; border-radius: 50%; background: oklch(0.35 0.01 70); display: inline-block } .viewer .vbar i:first-child { background: oklch(0.6 0.15 25) }
   .viewer .vbar .url { margin-left: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-  .viewer .vbody { padding: 22px 22px 6px }
-  .viewer h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 16px } .viewer h4 span { color: var(--muted); font-weight: 500 }
-  .vstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px }
-  .vstat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 11px }
+  .viewer .vbody { padding: 28px 28px 10px }
+  .viewer h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 20px } .viewer h4 span { color: var(--muted); font-weight: 500 }
+  .vstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px }
+  .vstat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 13px }
   .vstat .l { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted) }
   .vstat .v { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-top: 6px } .vstat.hot .v { color: var(--primary) }
   .vstat .s { font-size: 12px; color: var(--dim); margin-top: 2px }
-  .vchips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px }
+  .vchips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px }
   .chip { font-family: var(--mono); font-size: 11.5px; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--muted); user-select: none; line-height: 1.6 }
   .chip:hover { border-color: var(--border-2); color: var(--fg) }
   .chip.on { color: var(--fg); background: var(--card-2); border-color: var(--border-2) }
   .chip b { font-weight: 500; color: var(--dim); margin-left: 5px } .chip.on b { color: var(--primary) }
-  .vtbl { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px }
-  .vtbl table { font-size: 13.5px } .vtbl th, .vtbl td { padding: 8px 12px } .vtbl tr:last-child td { border-bottom: 0 }
+  .vtbl { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px }
+  .vtbl table { font-size: 13.5px } .vtbl th, .vtbl td { padding: 10px 14px } .vtbl tr:last-child td { border-bottom: 0 }
   .vtbl td.k { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; position: relative; color: var(--fg) }
   .vtbl td.k.new::before { content: ''; position: absolute; left: 0; top: 11px; width: 3px; height: 14px; border-radius: 2px; background: var(--primary) }
   .vtbl td.d, .vtbl td.n { font-family: var(--mono); font-size: 12px; white-space: nowrap; color: var(--muted) } .vtbl td.n { text-align: right }
@@ -214,29 +214,29 @@ gtag('js', new Date());
   .pill.people { border-color: oklch(0.82 0.15 75 / 40%); color: var(--primary) }
   .vtbl tr[hidden] { display: none }
   .vtbl .empty { padding: 24px; text-align: center; color: var(--dim); font-size: 13.5px }
-  .vfoot { font-family: var(--mono); font-size: 11.5px; color: var(--dim); padding: 0 0 12px }
+  .vfoot { font-family: var(--mono); font-size: 11.5px; color: var(--dim); padding: 0 0 16px }
   table { width: 100%; border-collapse: collapse; font-size: 14.5px }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top }
+  th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top }
   th { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500 }
   td:first-child { font-weight: 500; white-space: nowrap } td { color: var(--muted) } td:first-child { color: var(--fg) }
   .tbl { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto }
-  .faq details { border-bottom: 1px solid var(--border); padding: 14px 0 }
+  .faq details { border-bottom: 1px solid var(--border); padding: 18px 0 }
   .faq summary { cursor: pointer; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 16px }
   .faq summary::-webkit-details-marker { display: none } .faq summary::after { content: '+'; color: var(--primary); font-family: var(--mono) } .faq details[open] summary::after { content: '−' }
-  .faq p { color: var(--muted); margin: 10px 0 0; font-size: 15px }
-  pre.code { background: oklch(0.12 0.005 70); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; overflow-x: auto; color: oklch(0.85 0.006 80); margin: 0 0 12px }
-  footer { margin-top: 72px; padding: 28px 0 56px; border-top: 1px solid var(--border); color: var(--dim); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 22px }
+  .faq p { color: var(--muted); margin: 12px 0 0; font-size: 15px; max-width: 720px }
+  pre.code { background: oklch(0.12 0.005 70); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; font-size: 13px; line-height: 1.6; overflow-x: auto; color: oklch(0.85 0.006 80); margin: 0 0 12px }
+  footer { margin-top: 104px; padding: 32px 0 72px; border-top: 1px solid var(--border); color: var(--dim); font-size: 14px; display: flex; flex-wrap: wrap; gap: 10px 26px }
   footer a { color: var(--muted) }
   .rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms) }
   @keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
   @media (prefers-reduced-motion: reduce) { .rise, .turn.agent.show .ln, .between.flow::before { animation: none } }
   @media (max-width: 640px) {
-    nav a:not(:last-child) { display: none } .hero { padding-top: 32px } section { padding-top: 48px }
-    .lede { font-size: 1.05rem } .turn.you { padding: 22px 16px 16px 18px } .turn.you .say { font-size: 1.1rem } .turn.you .btn { width: 100% ; justify-content: center }
-    .between { margin: 28px 0 32px 18px; gap: 14px }
-    .viewer .vbody { padding: 16px 14px 4px } .vtbl th:nth-child(3), .vtbl td:nth-child(3) { display: none } .vtbl td.note { min-width: 140px }
+    nav a:not(:last-child) { display: none } .hero { padding-top: 44px } section { padding-top: 72px }
+    .lede { font-size: 1.05rem; margin-bottom: 48px } .turn.you { padding: 24px 20px 20px 20px } .turn.you .say { font-size: 1.1rem } .turn.you .btn { width: 100% ; justify-content: center }
+    .between { margin: 32px 0 36px 20px; gap: 14px }
+    .viewer .vbody { padding: 20px 16px 8px } .vtbl th:nth-child(3), .vtbl td:nth-child(3) { display: none } .vtbl td.note { min-width: 140px }
     .tbl table, .tbl tbody, .tbl tr, .tbl td { display: block } .tbl thead { display: none }
-    .tbl tr { padding: 14px 16px; border-bottom: 1px solid var(--border) } .tbl tr:last-child { border-bottom: 0 }
+    .tbl tr { padding: 18px 16px; border-bottom: 1px solid var(--border) } .tbl tr:last-child { border-bottom: 0 }
     .tbl td { padding: 0 0 8px; border: 0; white-space: normal } .tbl td:first-child { font-size: 16px; padding-bottom: 10px }
     .tbl td:not(:first-child)::before { content: attr(data-label); display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 1px }
   }
@@ -297,12 +297,12 @@ gtag('js', new Date());
     <div class="section-head">How it works</div>
     <h2>Scripts find the hosts. Your agent finds out what they are.</h2>
     <p class="muted" style="max-width:680px">Mention trackers and backlink tools list hosts. They do not open each one, decide that this one is a Spanish AI-music tutorial worth a thank-you and that one is a parked domain never to be shown again, and write that into a file you own. That is the part that makes the report readable, and it is only cheap because the agent is already there.</p>
-    <div class="grid" style="margin-top:20px">
+    <div class="grid" style="margin-top:32px">
       <div class="card"><div class="n">01 · remembers</div><h3>A ledger, not a dashboard</h3><p>Every host, agent and platform ever seen, with first-seen date, kind and a note, in <code>docs/foundby.md</code> next to your code. Each run covers exactly the gap since the last one. Junk surfaces once.</p></div>
       <div class="card"><div class="n">02 · explains</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
       <div class="card"><div class="n">03 · stays yours</div><h3>No service, no account</h3><p>Runs on your machine with your credentials. State is two files in your repo. Client IPs are never read. Nothing is sent anywhere that you did not already pay for.</p></div>
     </div>
-    <h3 style="margin-top:36px"><code class="cmd">/foundby open</code> turns the ledger into a page.</h3>
+    <h3 style="margin-top:56px"><code class="cmd">/foundby open</code> turns the ledger into a page.</h3>
     <p class="muted" style="max-width:680px;margin:0">Every row ever seen, with its kind and note, plus a filter box, kind chips and sortable columns. It is a single HTML file rendered from the ledger in your repo. Click the chips below to try the filter.</p>
     <div class="viewer" id="viewer" aria-label="Simplified preview of the ledger viewer">
       <div class="vbar"><i></i><i></i><i></i><span class="url">file:///tmp/foundby-example.com.html</span></div>
@@ -345,7 +345,7 @@ gtag('js', new Date());
     <div class="section-head">Sources</div>
     <h2>Four sources, all optional. Each one sees something the others miss.</h2>
     <p class="muted" style="max-width:680px">A site with nothing but a domain gets the mention search. The rest are worth adding when you already have them.</p>
-    <div class="tbl" style="margin-top:20px">
+    <div class="tbl" style="margin-top:32px">
       <table>
         <thead><tr><th>Source</th><th>Sees</th><th>Blind to</th><th>Needs</th></tr></thead>
         <tbody>
@@ -356,15 +356,15 @@ gtag('js', new Date());
         </tbody>
       </table>
     </div>
-    <p class="muted" style="margin-top:14px;font-size:14.5px">Not sure which to add? <code>foundby.py doctor</code> checks what you have wired and says what each missing source would add for your site. With GA connected it also reads 90 days of channel mix, so it can tell you, for example, that a large Direct share is probably link previews the edge logs would name. Setup, cost and blind spots are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">docs/sources.md</a>.</p>
+    <p class="muted" style="margin-top:20px;font-size:14.5px;max-width:720px">Not sure which to add? <code>foundby.py doctor</code> checks what you have wired and says what each missing source would add for your site. With GA connected it also reads 90 days of channel mix, so it can tell you, for example, that a large Direct share is probably link previews the edge logs would name. Setup, cost and blind spots are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">docs/sources.md</a>.</p>
   </section>
 
   <section id="use">
     <div class="section-head">Without an agent</div>
     <h2>The scripts run on their own.</h2>
     <p class="muted" style="max-width:680px">Python 3.10+ and the standard library, plus <code>cryptography</code> if you wire GA. Config is one <code>foundby.json</code> in your repo. The agent's job is the lookup step: visiting each new host and writing the one-line note. Without one, you do that with <code>set</code>.</p>
-<pre class="code"># install (the same clone is the manual install for the agent)
-git clone https://github.com/preziotte/foundby .claude/skills/foundby
+<pre class="code"># install as plain files in this repo (the agent does the same)
+git clone --depth 1 https://github.com/preziotte/foundby .claude/skills/foundby &amp;&amp; rm -rf .claude/skills/foundby/.git
 
 # write foundby.json, then check which sources are wired
 python3 .claude/skills/foundby/scripts/foundby.py init example.com
@@ -385,8 +385,8 @@ python3 .claude/skills/foundby/scripts/foundby.py update</pre>
 
   <section id="faq" class="faq">
     <div class="section-head">FAQ</div>
-    <details open><summary>What will the prompt actually do to my repo?</summary><p>Your agent fetches foundby.dev, which points it at the GitHub repo and <code>SKILL.md</code>. It clones the skill into <code>.claude/skills/foundby</code>, writes a <code>foundby.json</code> with your domain, runs <code>doctor</code> to see which sources you already have credentials for, and asks before wiring any that need setup. Then it runs the first report and writes the ledger to <code>docs/foundby.md</code>. Every step is a plain Python script you can read first.</p></details>
-    <details><summary>Can I install it by hand, or use it without an agent?</summary><p>Yes to both. The clone command under <a href="#use">Without an agent</a> is the manual install, and the same scripts run from a shell with no agent at all.</p></details>
+    <details open><summary>What will the prompt actually do to my repo?</summary><p>Your agent fetches foundby.dev, which points it at the GitHub repo and <code>SKILL.md</code>. It clones the skill into <code>.claude/skills/foundby</code> as plain files (no nested git repo), asks whether you want the YouTube description search, writes a <code>foundby.json</code> with your domain, runs <code>doctor</code> to see which sources you already have credentials for, and asks before wiring any that need setup. Then it runs the first report and writes the ledger to <code>docs/foundby.md</code>. Every step is a plain Python script you can read first.</p></details>
+    <details><summary>Can I install it by hand, or use it without an agent?</summary><p>Yes to both. The clone command under <a href="#use">Without an agent</a> is the manual install, and the same scripts run from a shell with no agent at all. To install it once for every project instead, clone anywhere and symlink the clone into <code>~/.claude/skills/foundby</code>.</p></details>
     <details><summary>What does this see that Google Analytics does not?</summary><p>Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union.</p></details>
     <details><summary>Is anything sent to a server?</summary><p>No. There is no foundby service. The scripts run on your machine, call the public APIs and your own analytics and log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs.</p></details>
     <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
