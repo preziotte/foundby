@@ -139,6 +139,7 @@ gtag('js', new Date());
   .turn.agent.show .ln { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms) }
   .hint { color: var(--dim); font-size: 14px; margin: 16px 0 0 }
   .hint code { color: var(--fg); font-size: 13px; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 7px; margin: 0 1px }
+  code.cmd { color: var(--fg); font-size: 0.85em; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 8px; font-weight: 500 }
   .hint a { color: var(--dim); text-decoration: underline; text-decoration-color: var(--border-2); text-underline-offset: 3px } .hint a:hover { color: var(--muted); text-decoration-color: var(--muted) }
 
   section { padding: 64px 0 0 }
@@ -152,10 +153,33 @@ gtag('js', new Date());
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px }
   .card .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: .12em; color: var(--primary); margin-bottom: 8px }
   .card p { color: var(--muted); font-size: 14.5px; margin: 0 }
-  .file { background: oklch(0.12 0.005 70); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 14px }
-  .file .tab { display: flex; justify-content: space-between; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12.5px; color: var(--muted) }
-  .file pre { margin: 0; padding: 16px 18px; font-size: 13px; line-height: 1.6; overflow-x: auto; color: oklch(0.85 0.006 80) }
-  .file .k { color: var(--primary) } .file .d { color: var(--dim) } .file .n2 { color: oklch(0.8 0.06 150) }
+  .viewer { background: var(--bg); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; margin-top: 28px; box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
+  .viewer .vbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--dim); background: oklch(0.13 0.005 70) }
+  .viewer .vbar i { width: 10px; height: 10px; border-radius: 50%; background: oklch(0.35 0.01 70); display: inline-block } .viewer .vbar i:first-child { background: oklch(0.6 0.15 25) }
+  .viewer .vbar .url { margin-left: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+  .viewer .vbody { padding: 22px 22px 6px }
+  .viewer h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 16px } .viewer h4 span { color: var(--muted); font-weight: 500 }
+  .vstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px }
+  .vstat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 11px }
+  .vstat .l { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted) }
+  .vstat .v { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-top: 6px } .vstat.hot .v { color: var(--primary) }
+  .vstat .s { font-size: 12px; color: var(--dim); margin-top: 2px }
+  .vchips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px }
+  .chip { font-family: var(--mono); font-size: 11.5px; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--muted); user-select: none; line-height: 1.6 }
+  .chip:hover { border-color: var(--border-2); color: var(--fg) }
+  .chip.on { color: var(--fg); background: var(--card-2); border-color: var(--border-2) }
+  .chip b { font-weight: 500; color: var(--dim); margin-left: 5px } .chip.on b { color: var(--primary) }
+  .vtbl { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px }
+  .vtbl table { font-size: 13.5px } .vtbl th, .vtbl td { padding: 8px 12px } .vtbl tr:last-child td { border-bottom: 0 }
+  .vtbl td.k { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; position: relative; color: var(--fg) }
+  .vtbl td.k.new::before { content: ''; position: absolute; left: 0; top: 11px; width: 3px; height: 14px; border-radius: 2px; background: var(--primary) }
+  .vtbl td.d, .vtbl td.n { font-family: var(--mono); font-size: 12px; white-space: nowrap; color: var(--muted) } .vtbl td.n { text-align: right }
+  .vtbl td.note { color: oklch(0.8 0.008 80); min-width: 200px } .vtbl td.note a { font-size: 12.5px }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border-2); color: var(--muted); line-height: 1.6 }
+  .pill.people { border-color: oklch(0.82 0.15 75 / 40%); color: var(--primary) }
+  .vtbl tr[hidden] { display: none }
+  .vtbl .empty { padding: 24px; text-align: center; color: var(--dim); font-size: 13.5px }
+  .vfoot { font-family: var(--mono); font-size: 11.5px; color: var(--dim); padding: 0 0 12px }
   table { width: 100%; border-collapse: collapse; font-size: 14.5px }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top }
   th { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500 }
@@ -175,6 +199,7 @@ gtag('js', new Date());
     nav a:not(:last-child) { display: none } .hero { padding-top: 32px } section { padding-top: 48px }
     .lede { font-size: 1.05rem } .turn.you { padding: 22px 16px 16px 18px } .turn.you .say { font-size: 1.1rem } .turn.you .btn { width: 100% ; justify-content: center }
     .between { margin: 28px 0 32px 18px; gap: 14px }
+    .viewer .vbody { padding: 16px 14px 4px } .vtbl th:nth-child(3), .vtbl td:nth-child(3) { display: none } .vtbl td.note { min-width: 140px }
     .tbl table, .tbl tbody, .tbl tr, .tbl td { display: block } .tbl thead { display: none }
     .tbl tr { padding: 14px 16px; border-bottom: 1px solid var(--border) } .tbl tr:last-child { border-bottom: 0 }
     .tbl td { padding: 0 0 8px; border: 0; white-space: normal } .tbl td:first-child { font-size: 16px; padding-bottom: 10px }
@@ -229,7 +254,7 @@ gtag('js', new Date());
 
 <span class="ln" style="--i:8">  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</span></pre>
     </div>
-    <p class="hint rise" style="--i:4">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run.</p>
+    <p class="hint rise" style="--i:4">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run. <code>/foundby open</code> shows the whole ledger as a page.</p>
   </section>
 
   <section id="how">
@@ -241,16 +266,42 @@ gtag('js', new Date());
       <div class="card"><div class="n">02 · explains</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
       <div class="card"><div class="n">03 · stays yours</div><h3>No service, no account</h3><p>Runs on your machine with your credentials. State is two files in your repo. Client IPs are never read. Nothing is sent anywhere that you did not already pay for.</p></div>
     </div>
-    <div class="file">
-      <div class="tab"><span>docs/foundby.md</span><span>the ledger, after the agent has looked things up</span></div>
-<pre><span class="d"># How people find example.com</span>
-
-| key                  | kind     | first seen | last seen  | hits | via  | note |
-|---|---|---|---|---|---|---|
-| `skinnypuppy.eu`     | <span class="k">blog</span>     | 2026-10-24 | 2026-10-29 |   25 | edge | <span class="n2">Fan site, links from a tutorial page</span> |
-| `youtube.com`        | <span class="k">video</span>    | 2026-10-23 | 2026-10-29 |    3 | web  | <span class="n2">Walkthrough, link in description</span> |
-| `unfurl:Discord`     | <span class="k">unfurler</span> | 2026-10-26 | 2026-10-29 |   14 | edge | <span class="n2">Pasted into a server, count only</span> |
-| `seo-tools.xyz`      | <span class="k">junk</span>     | 2026-10-22 | 2026-10-22 |    1 | edge | <span class="n2">Scraper. Never shown again</span> |</pre>
+    <h3 style="margin-top:36px"><code class="cmd">/foundby open</code> turns the ledger into a page.</h3>
+    <p class="muted" style="max-width:680px;margin:0">Every row ever seen, with its kind and note, plus a filter box, kind chips and sortable columns. It is a single HTML file rendered from the ledger in your repo. Click the chips below to try the filter.</p>
+    <div class="viewer" id="viewer" aria-label="Simplified preview of the ledger viewer">
+      <div class="vbar"><i></i><i></i><i></i><span class="url">file:///tmp/foundby-example.com.html</span></div>
+      <div class="vbody">
+        <h4>How people find <span>example.com</span></h4>
+        <div class="vstats">
+          <div class="vstat"><div class="l">ways in</div><div class="v">184</div><div class="s">distinct paths to the site</div></div>
+          <div class="vstat hot"><div class="l">new in 14 days</div><div class="v">7</div><div class="s">first seen since Oct 17</div></div>
+          <div class="vstat"><div class="l">people-shaped</div><div class="v">23</div><div class="s">blogs, threads, videos, listings</div></div>
+          <div class="vstat"><div class="l">last run</div><div class="v">2h ago</div><div class="s">covers the gap since Oct 22</div></div>
+        </div>
+        <div class="vchips" id="vchips"><button class="chip on" type="button" data-kind="blog">blog<b>1</b></button><button class="chip on" type="button" data-kind="forum">forum<b>2</b></button><button class="chip on" type="button" data-kind="video">video<b>1</b></button><button class="chip on" type="button" data-kind="directory">directory<b>2</b></button><button class="chip on" type="button" data-kind="social">social<b>1</b></button><button class="chip on" type="button" data-kind="ai">ai<b>2</b></button><button class="chip on" type="button" data-kind="app">app<b>1</b></button><button class="chip on" type="button" data-kind="unfurler">unfurler<b>1</b></button><button class="chip" type="button" data-kind="search">search<b>1</b></button><button class="chip" type="button" data-kind="junk">junk<b>1</b></button></div>
+        <div class="vtbl">
+          <table>
+            <thead><tr><th>key</th><th>kind</th><th>first seen</th><th>hits</th><th>note</th></tr></thead>
+            <tbody id="vrows">
+          <tr data-kind="blog"><td class="k new">skinnypuppy.eu</td><td><span class="pill people">blog</span></td><td class="d">2026-10-24</td><td class="n">25</td><td class="note">Fan site, links from a tutorial page</td></tr>
+          <tr data-kind="forum"><td class="k new">news.ycombinator.com</td><td><span class="pill people">forum</span></td><td class="d">2026-10-25</td><td class="n">9</td><td class="note">Show HN thread, 40 comments, questions to answer</td></tr>
+          <tr data-kind="video"><td class="k new">youtube.com</td><td><span class="pill people">video</span></td><td class="d">2026-10-23</td><td class="n">3</td><td class="note">Walkthrough video, link in the description</td></tr>
+          <tr data-kind="directory"><td class="k new">github:someone/awesome-music-tools</td><td><span class="pill people">directory</span></td><td class="d">2026-10-26</td><td class="n">0</td><td class="note">Listed under visualizers; description is out of date</td></tr>
+          <tr data-kind="unfurler"><td class="k new">unfurl:Discord</td><td><span class="pill">unfurler</span></td><td class="d">2026-10-26</td><td class="n">14</td><td class="note">Pasted into a server. Private, count only</td></tr>
+          <tr data-kind="ai"><td class="k">chatgpt.com</td><td><span class="pill">ai</span></td><td class="d">2026-09-02</td><td class="n">61</td><td class="note">Cited in answers about browser visualizers</td></tr>
+          <tr data-kind="ai"><td class="k">perplexity.ai</td><td><span class="pill">ai</span></td><td class="d">2026-09-14</td><td class="n">18</td><td class="note"></td></tr>
+          <tr data-kind="forum"><td class="k">reddit.com</td><td><span class="pill people">forum</span></td><td class="d">2026-08-11</td><td class="n">37</td><td class="note">r/WeAreTheMusicMakers, two threads</td></tr>
+          <tr data-kind="directory"><td class="k">producthunt.com</td><td><span class="pill people">directory</span></td><td class="d">2026-07-30</td><td class="n">142</td><td class="note">Launch day, #4 product of the day</td></tr>
+          <tr data-kind="app"><td class="k">app:instagram</td><td><span class="pill">app</span></td><td class="d">2026-08-20</td><td class="n">22</td><td class="note">Bio link in a creator profile; in-app browser, no referrer</td></tr>
+          <tr data-kind="social"><td class="k">mastodon.social</td><td><span class="pill">social</span></td><td class="d">2026-09-28</td><td class="n">6</td><td class="note">Boosted by a synth account</td></tr>
+          <tr data-kind="search" hidden><td class="k">duckduckgo.com</td><td><span class="pill">search</span></td><td class="d">2026-06-02</td><td class="n">410</td><td class="note"></td></tr>
+          <tr data-kind="junk" hidden><td class="k">seo-tools.xyz</td><td><span class="pill">junk</span></td><td class="d">2026-10-22</td><td class="n">1</td><td class="note">Scraper. Never shown again</td></tr>
+            </tbody>
+          </table>
+          <div class="empty" id="vempty" hidden>Nothing matches.</div>
+        </div>
+        <div class="vfoot">Showing the first page of 184 rows · search and junk are hidden by default, as in the real thing</div>
+      </div>
     </div>
   </section>
 
@@ -306,6 +357,18 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
   </footer>
 </div>
 <script>
+  (function () {
+    var chips = document.querySelectorAll('#vchips .chip'), rows = document.querySelectorAll('#vrows tr'), empty = document.getElementById('vempty');
+    function apply() {
+      var on = {}; chips.forEach(function (c) { on[c.dataset.kind] = c.classList.contains('on'); });
+      var shown = 0; rows.forEach(function (r) { var v = !!on[r.dataset.kind]; r.hidden = !v; if (v) shown++; });
+      empty.hidden = shown > 0;
+    }
+    chips.forEach(function (c) { c.addEventListener('click', function (e) {
+      if (e.shiftKey) chips.forEach(function (o) { o.classList.toggle('on', o === c); }); else c.classList.toggle('on');
+      apply();
+    }); });
+  })();
   (function () {
     document.documentElement.classList.add('js');
     var you = document.getElementById('you'), btn = document.getElementById('copyBtn'), label = document.getElementById('copyLabel');
