@@ -3,7 +3,7 @@
 Ask your coding agent how people find your site.
 
 ```
-Find out how people are finding my site with foundby.dev
+Set up foundby.dev in this repo and tell me how people are finding this site.
 ```
 
 foundby is a skill for Claude Code (and any agent that reads `SKILL.md`) plus a few Python

@@ -83,7 +83,7 @@ gtag('js', new Date());
   :root {
     color-scheme: dark;
     --bg: oklch(0.155 0.006 70); --card: oklch(0.19 0.006 70); --card-2: oklch(0.215 0.006 70);
-    --fg: oklch(0.93 0.006 80); --muted: oklch(0.66 0.01 75); --dim: oklch(0.5 0.01 75);
+    --fg: oklch(0.93 0.006 80); --muted: oklch(0.68 0.01 75); --dim: oklch(0.58 0.01 75);
     --border: oklch(1 0 0 / 9%); --border-2: oklch(1 0 0 / 16%);
     --primary: oklch(0.82 0.15 75); --primary-fg: oklch(0.16 0.03 70); --primary-dim: oklch(0.82 0.15 75 / 14%);
     --link: oklch(0.8 0.08 230);
@@ -108,24 +108,39 @@ gtag('js', new Date());
   .hero { position: relative; padding: 56px 0 24px }
   .hero-glow { position: absolute; left: -10%; top: -40px; width: 60%; height: 320px; background: radial-gradient(ellipse at 30% 30%, oklch(0.82 0.15 75 / 12%), transparent 65%); pointer-events: none; filter: blur(10px) }
   h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 20px; max-width: 760px; text-wrap: balance }
-  .lede { font-size: 1.15rem; color: var(--muted); max-width: 640px; margin: 0 0 30px }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-bottom: 14px }
-  .prompt { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border-2); border-radius: 12px; padding: 14px 16px 14px 18px; font-family: var(--mono); font-size: 15px; cursor: pointer; text-align: left; color: var(--fg); max-width: 100%; transition: border-color .15s, box-shadow .15s }
-  .prompt:hover { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-dim) }
-  .prompt .q { color: var(--primary) }
-  .prompt .copy { font-family: var(--sans); font-size: 12.5px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; white-space: nowrap }
-  .prompt.done .copy { color: var(--primary); border-color: var(--primary) }
-  .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 18px; font-weight: 500; font-size: 15px; border: 1px solid var(--border-2); color: var(--fg); background: transparent; text-decoration: none }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 0 36px }
+
+  /* The session: your turn (the prompt), then the agent's turn (the report). */
+  .turn { position: relative; border: 1px solid var(--border-2); border-radius: 14px; background: var(--card) }
+  .turn .who { position: absolute; top: -9px; left: 16px; font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); background: var(--bg); padding: 0 7px; line-height: 18px }
+  .turn.you { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 24px 20px 20px 24px; cursor: pointer; transition: border-color .15s, box-shadow .15s }
+  .turn.you:hover, .turn.you:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-dim) }
+  .turn.you .say { flex: 1 1 360px; margin: 0; font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.012em; min-height: 1.4em }
+  .turn.you .say::after { content: ''; display: inline-block; width: 2px; height: 1.05em; background: var(--primary); margin-left: 3px; vertical-align: -0.18em; opacity: 0 }
+  .turn.you.typing .say::after { opacity: 1; animation: blink 1s steps(1) infinite }
+  @keyframes blink { 50% { opacity: 0 } }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 18px; font-weight: 500; font-size: 15px; border: 1px solid var(--border-2); color: var(--fg); background: transparent; text-decoration: none; font-family: var(--sans); cursor: pointer; white-space: nowrap }
   .btn:hover { text-decoration: none; border-color: var(--fg) }
   .btn.primary { background: var(--primary); color: var(--primary-fg); border-color: var(--primary) }
   .btn.primary:hover { filter: brightness(1.05) }
-  .hint { color: var(--dim); font-size: 14px; margin: 0 0 44px }
-  .hint code { color: var(--muted); font-size: 13px }
-  .term { background: oklch(0.12 0.005 70); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
-  .term .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12.5px; color: var(--muted) }
-  .term .bar i { width: 10px; height: 10px; border-radius: 50%; background: oklch(0.35 0.01 70); display: inline-block } .term .bar i:first-child { background: oklch(0.6 0.15 25) }
-  .term pre { margin: 0; padding: 18px 20px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
-  .term .k { color: var(--primary) } .term .d { color: var(--dim) } .term .u { color: var(--link) }
+  .btn svg { width: 16px; height: 16px; flex: none }
+  .btn.copied { background: transparent; color: var(--primary); border-color: var(--primary) }
+  .between { display: flex; gap: 18px; align-items: flex-start; margin: 38px 0 42px 24px; color: var(--dim); font-size: 14.5px; line-height: 1.85; max-width: 720px; transition: opacity .6s }
+  .between::before { content: ''; flex: none; width: 2px; align-self: stretch; margin: 2px 0; background: linear-gradient(180deg, var(--border-2) 0 3px, transparent 3px 7px) 0 0 / 2px 7px repeat-y }
+  .between.flow::before { background-image: linear-gradient(180deg, var(--muted) 0 3px, transparent 3px 7px); animation: flow .6s linear infinite }
+  @keyframes flow { to { background-position: 0 7px } }
+  .js .between.pending { opacity: 0 }
+  .between p { margin: 0 }
+  .between code { color: var(--muted); font-size: 13px }
+  .turn.agent { background: oklch(0.12 0.005 70); box-shadow: 0 30px 80px -30px oklch(0 0 0 / 60%) }
+  .turn.agent pre { margin: 0; padding: 24px 20px 18px; font-size: 13px; line-height: 1.55; overflow-x: auto; color: oklch(0.85 0.006 80) }
+  .turn.agent .k { color: var(--primary) } .turn.agent .d { color: var(--dim) } .turn.agent .u { color: var(--link) }
+  .turn.agent { transition: opacity .5s } .js .turn.agent:not(.show) { opacity: 0 } .js .turn.agent:not(.show) .ln { opacity: 0 }
+  .turn.agent.show .ln { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms) }
+  .hint { color: var(--dim); font-size: 14px; margin: 16px 0 0 }
+  .hint code { color: var(--fg); font-size: 13px; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 2px 7px; margin: 0 1px }
+  .hint a { color: var(--dim); text-decoration: underline; text-decoration-color: var(--border-2); text-underline-offset: 3px } .hint a:hover { color: var(--muted); text-decoration-color: var(--muted) }
+
   section { padding: 64px 0 0 }
   .section-head { display: flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); white-space: nowrap; margin: 0 0 14px }
   .section-head::before { content: ''; width: 1.25rem; height: 2px; background: var(--primary); opacity: .8 }
@@ -137,6 +152,10 @@ gtag('js', new Date());
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px }
   .card .n { font-family: var(--mono); font-size: 0.7rem; letter-spacing: .12em; color: var(--primary); margin-bottom: 8px }
   .card p { color: var(--muted); font-size: 14.5px; margin: 0 }
+  .file { background: oklch(0.12 0.005 70); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 14px }
+  .file .tab { display: flex; justify-content: space-between; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12.5px; color: var(--muted) }
+  .file pre { margin: 0; padding: 16px 18px; font-size: 13px; line-height: 1.6; overflow-x: auto; color: oklch(0.85 0.006 80) }
+  .file .k { color: var(--primary) } .file .d { color: var(--dim) } .file .n2 { color: oklch(0.8 0.06 150) }
   table { width: 100%; border-collapse: collapse; font-size: 14.5px }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top }
   th { font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500 }
@@ -151,8 +170,16 @@ gtag('js', new Date());
   footer a { color: var(--muted) }
   .rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms) }
   @keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: reduce) { .rise { animation: none } }
-  @media (max-width: 640px) { nav a:not(:last-child) { display: none } .hero { padding-top: 32px } section { padding-top: 48px } }
+  @media (prefers-reduced-motion: reduce) { .rise, .turn.agent.show .ln, .between.flow::before { animation: none } }
+  @media (max-width: 640px) {
+    nav a:not(:last-child) { display: none } .hero { padding-top: 32px } section { padding-top: 48px }
+    .lede { font-size: 1.05rem } .turn.you { padding: 22px 16px 16px 18px } .turn.you .say { font-size: 1.1rem } .turn.you .btn { width: 100% ; justify-content: center }
+    .between { margin: 28px 0 32px 18px; gap: 14px }
+    .tbl table, .tbl tbody, .tbl tr, .tbl td { display: block } .tbl thead { display: none }
+    .tbl tr { padding: 14px 16px; border-bottom: 1px solid var(--border) } .tbl tr:last-child { border-bottom: 0 }
+    .tbl td { padding: 0 0 8px; border: 0; white-space: normal } .tbl td:first-child { font-size: 16px; padding-bottom: 10px }
+    .tbl td:not(:first-child)::before { content: attr(data-label); display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 1px }
+  }
 </style>
 </head>
 <body>
@@ -164,8 +191,8 @@ gtag('js', new Date());
       foundby
     </a>
     <nav>
-      <a href="#sources">Sources</a>
       <a href="#how">How it works</a>
+      <a href="#sources">Sources</a>
       <a href="#faq">FAQ</a>
       <a href="https://github.com/preziotte/foundby">GitHub</a>
     </nav>
@@ -175,31 +202,34 @@ gtag('js', new Date());
     <div class="hero-glow" aria-hidden="true"></div>
     <p class="eyebrow rise" style="--i:0">Free · open source · runs in your coding agent</p>
     <h1 class="rise" style="--i:1">Ask your coding agent how people find your site.</h1>
-    <p class="lede rise" style="--i:2">foundby keeps a ledger in your repo of every way a person has ever reached your site: referring hosts, AI assistants, link previews, in-app browsers, backlinks and web mentions. Each run reports only what is new, and your agent looks up every new one and writes down what it is.</p>
-    <div class="cta rise" style="--i:3">
-      <button class="prompt" id="prompt" type="button" aria-label="Copy the prompt">
-        <span><span class="q">&gt;</span> Find out how people are finding my site with foundby.dev</span>
-        <span class="copy" id="copyLabel">copy</span>
+    <p class="lede rise" style="--i:2">foundby finds every place people arrive from: referrers, AI assistants, link previews, web mentions. It remembers them in your repo, tells you only what is new, and looks up each new one so you know what it is.</p>
+
+    <div class="turn you rise" id="you" style="--i:3" title="Click to copy">
+      <span class="who">you</span>
+      <p class="say" id="say">Set up foundby.dev in this repo and tell me how people are finding this site.</p>
+      <button class="btn primary" id="copyBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+        <span id="copyLabel">Copy prompt</span>
       </button>
     </div>
-    <p class="hint rise" style="--i:4">Paste it into Claude Code, Codex, Cursor or any agent that reads a <code>SKILL.md</code>.<br>Or install by hand: <code>git clone https://github.com/preziotte/foundby .claude/skills/foundby</code></p>
-    <div class="term rise" style="--i:5">
-      <div class="bar"><i></i><i></i><i></i>&nbsp; /foundby</div>
-<pre>FOUNDBY · example.com · new since 2026-10-22 (7d window, 184 rows in ledger)
-
-  <span class="k">NEW</span>  blog      skinnypuppy.eu                              25  via edge
-  <span class="k">NEW</span>  video     youtube.com                                  3  via web  <span class="u">youtube.com/watch?v=…</span>
-  <span class="k">NEW</span>  forum     news.ycombinator.com                         9  via edge,web
-  <span class="k">NEW</span>  directory github:someone/awesome-music-tools           0  via web  <span class="u">github.com/someone/awesome-music-tools</span>
-  <span class="k">NEW</span>  unfurler  unfurl:Discord                              14  via edge
-  <span class="d">junk (3): 185.220.101.4, seo-tools.xyz, translate.goog</span>
-  <span class="k">PAGE</span> forum     reddit.com                                        <span class="u">reddit.com/r/WeAreTheMusicMakers/comments/…</span>
-  <span class="k">SURGE</span> search   duckduckgo.com                              41  was ~2.1/day
-
-  <span class="d">sources: edge 2026-10-22..2026-10-29 (168h) · ga 2026-10-22..2026-10-29 · mentions hn:1 github:4 bluesky:2 lobsters:0 youtube:3 · bing API returns no links for this site</span>
-
-  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</pre>
+    <div class="between pending" id="between">
+      <p>Paste it into Claude Code, Codex or Cursor.<br>Your agent reads foundby.dev, clones the skill into <code>.claude/skills</code> and comes back with this:</p>
     </div>
+    <div class="turn agent" id="agent">
+      <span class="who">your agent · a minute later</span>
+<pre><span class="ln" style="--i:0">FOUNDBY · example.com · new since 2026-10-22 (184 rows in ledger)</span>
+
+<span class="ln" style="--i:1">  <span class="k">NEW</span>   blog       skinnypuppy.eu                           25</span>
+<span class="ln" style="--i:2">  <span class="k">NEW</span>   video      youtube.com                               3   <span class="u">youtube.com/watch?v=…</span></span>
+<span class="ln" style="--i:3">  <span class="k">NEW</span>   forum      news.ycombinator.com                      9</span>
+<span class="ln" style="--i:4">  <span class="k">NEW</span>   directory  github:someone/awesome-music-tools        0   <span class="u">github.com/someone/awesome-music-tools</span></span>
+<span class="ln" style="--i:5">  <span class="k">NEW</span>   unfurler   unfurl:Discord                           14</span>
+<span class="ln" style="--i:6">  <span class="k">SURGE</span> search     duckduckgo.com                           41   was ~2.1/day</span>
+<span class="ln" style="--i:7">  <span class="d">junk (3): 185.220.101.4, seo-tools.xyz, translate.goog</span></span>
+
+<span class="ln" style="--i:8">  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</span></pre>
+    </div>
+    <p class="hint rise" style="--i:4">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run.</p>
   </section>
 
   <section id="how">
@@ -208,8 +238,19 @@ gtag('js', new Date());
     <p class="muted" style="max-width:680px">Mention trackers and backlink tools list hosts. They do not open each one, decide that this one is a Spanish AI-music tutorial worth a thank-you and that one is a parked domain never to be shown again, and write that into a file you own. That is the part that makes the report readable, and it is only cheap because the agent is already there.</p>
     <div class="grid" style="margin-top:20px">
       <div class="card"><div class="n">01 · remembers</div><h3>A ledger, not a dashboard</h3><p>Every host, agent and platform ever seen, with first-seen date, kind and a note, in <code>docs/foundby.md</code> next to your code. Each run covers exactly the gap since the last one. Junk surfaces once.</p></div>
-      <div class="card"><div class="n">02 · looks up</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
-      <div class="card"><div class="n">03 · yours</div><h3>No service, no account</h3><p>Runs on your machine with your credentials. State is two files in your repo. Client IPs are never read. Nothing is sent anywhere that you did not already pay for.</p></div>
+      <div class="card"><div class="n">02 · explains</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
+      <div class="card"><div class="n">03 · stays yours</div><h3>No service, no account</h3><p>Runs on your machine with your credentials. State is two files in your repo. Client IPs are never read. Nothing is sent anywhere that you did not already pay for.</p></div>
+    </div>
+    <div class="file">
+      <div class="tab"><span>docs/foundby.md</span><span>the ledger, after the agent has looked things up</span></div>
+<pre><span class="d"># How people find example.com</span>
+
+| key                  | kind     | first seen | last seen  | hits | via  | note |
+|---|---|---|---|---|---|---|
+| `skinnypuppy.eu`     | <span class="k">blog</span>     | 2026-10-24 | 2026-10-29 |   25 | edge | <span class="n2">Fan site, links from a tutorial page</span> |
+| `youtube.com`        | <span class="k">video</span>    | 2026-10-23 | 2026-10-29 |    3 | web  | <span class="n2">Walkthrough, link in description</span> |
+| `unfurl:Discord`     | <span class="k">unfurler</span> | 2026-10-26 | 2026-10-29 |   14 | edge | <span class="n2">Pasted into a server, count only</span> |
+| `seo-tools.xyz`      | <span class="k">junk</span>     | 2026-10-22 | 2026-10-22 |    1 | edge | <span class="n2">Scraper. Never shown again</span> |</pre>
     </div>
   </section>
 
@@ -221,10 +262,10 @@ gtag('js', new Date());
       <table>
         <thead><tr><th>Source</th><th>Sees</th><th>Blind to</th><th>Needs</th></tr></thead>
         <tbody>
-          <tr><td>Mention search</td><td>Pages that talk about your site whether or not anyone clicked: Hacker News, GitHub code (awesome lists, READMEs), Bluesky, Lobsters, YouTube video descriptions, Reddit</td><td>X, Instagram, TikTok</td><td>Nothing. <code>gh auth login</code> for GitHub</td></tr>
-          <tr><td>Google Analytics 4</td><td>utm and gclid sources, GA's AI Assistant channel, in-app browsers (TikTok, Instagram), referring <em>pages</em> with three custom dimensions</td><td>Anything without JavaScript: agents, unfurlers, ad-blocked visitors</td><td>A service account on the property</td></tr>
-          <tr><td>CDN edge logs</td><td>Every request: referrers without JS, link unfurlers (each one a private share in Slack, Discord, iMessage), AI live-fetch agents (ChatGPT-User, Claude-User, Perplexity-User)</td><td>Native apps and email clients send no Referer</td><td>CloudFront standard logs in S3, the aws CLI</td></tr>
-          <tr><td>Bing Webmaster</td><td>The backlinks Bing knows about, via the only free backlink API</td><td>Most backlinks; often empty</td><td>An API key</td></tr>
+          <tr><td>Mention search</td><td data-label="Sees">Pages that talk about your site whether or not anyone clicked: Hacker News, GitHub code (awesome lists, READMEs), Bluesky, Lobsters, YouTube video descriptions, Reddit</td><td data-label="Blind to">X, Instagram, TikTok</td><td data-label="Needs">Nothing. <code>gh auth login</code> for GitHub</td></tr>
+          <tr><td>Google Analytics 4</td><td data-label="Sees">utm and gclid sources, GA's AI Assistant channel, in-app browsers (TikTok, Instagram), referring <em>pages</em> with three custom dimensions</td><td data-label="Blind to">Anything without JavaScript: agents, unfurlers, ad-blocked visitors</td><td data-label="Needs">A service account on the property</td></tr>
+          <tr><td>CDN edge logs</td><td data-label="Sees">Every request: referrers without JS, link unfurlers (each one a private share in Slack, Discord, iMessage), AI live-fetch agents (ChatGPT-User, Claude-User, Perplexity-User)</td><td data-label="Blind to">Native apps and email clients send no Referer</td><td data-label="Needs">CloudFront standard logs in S3, the aws CLI</td></tr>
+          <tr><td>Bing Webmaster</td><td data-label="Sees">The backlinks Bing knows about, via the only free backlink API</td><td data-label="Blind to">Most backlinks; often empty</td><td data-label="Needs">An API key</td></tr>
         </tbody>
       </table>
     </div>
@@ -234,7 +275,7 @@ gtag('js', new Date());
   <section id="use">
     <div class="section-head">Without an agent</div>
     <h2>The scripts work on their own.</h2>
-    <p class="muted" style="max-width:680px">Python 3.10+, standard library only (plus <code>cryptography</code> for the GA token). One <code>foundby.json</code> in your repo.</p>
+    <p class="muted" style="max-width:680px">Python 3.10+, standard library only (plus <code>cryptography</code> for the GA token). One <code>foundby.json</code> in your repo. Cloning into <code>.claude/skills</code> is also the manual install for the agent.</p>
 <pre class="code">git clone https://github.com/preziotte/foundby .claude/skills/foundby
 python3 .claude/skills/foundby/scripts/foundby.py init example.com
 python3 .claude/skills/foundby/scripts/foundby.py doctor
@@ -245,7 +286,9 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
 
   <section id="faq" class="faq">
     <div class="section-head">FAQ</div>
-    <details open><summary>What does this see that Google Analytics does not?</summary><p>Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union.</p></details>
+    <details open><summary>What will the prompt actually do to my repo?</summary><p>Your agent fetches foundby.dev, which points it at the GitHub repo and <code>SKILL.md</code>. It clones the skill into <code>.claude/skills/foundby</code>, writes a <code>foundby.json</code> with your domain, runs <code>doctor</code> to see which sources you already have credentials for, and asks before wiring any that need setup. Then it runs the first report and writes the ledger to <code>docs/foundby.md</code>. Every step is a plain Python script you can read first.</p></details>
+    <details><summary>Can I install it by hand, or use it without an agent?</summary><p>Yes. Clone the repo into <code>.claude/skills/foundby</code> and your agent picks it up as a skill. The scripts also run on their own from a shell with no agent at all: see <a href="#use">Without an agent</a>.</p></details>
+    <details><summary>What does this see that Google Analytics does not?</summary><p>Pages that mention your site whether or not anyone clicked (Hacker News, GitHub, Bluesky, YouTube descriptions), link previews fired when someone pastes your URL into Slack, Discord or iMessage, AI assistants fetching a page to answer a question, and referring pages rather than just hosts. It also reads GA itself, so you get the union.</p></details>
     <details><summary>Is anything sent to a server?</summary><p>No. There is no foundby service. The scripts run on your machine, call the public APIs and your own analytics and log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs.</p></details>
     <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
     <details><summary>Why does an agent need to be involved?</summary><p>The scripts find new hosts. The agent fetches each one and decides what it is: a tutorial worth a thank-you, a directory that listed you, a parked domain never to be shown again. That one-line note is what makes the ledger readable, and it is only cheap because the agent is already there.</p></details>
@@ -264,12 +307,35 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
 </div>
 <script>
   (function () {
-    var btn = document.getElementById('prompt'), label = document.getElementById('copyLabel');
-    var text = 'Find out how people are finding my site with foundby.dev';
-    btn.addEventListener('click', function () {
-      var done = function () { btn.classList.add('done'); label.textContent = 'copied'; setTimeout(function () { btn.classList.remove('done'); label.textContent = 'copy'; }, 1600); };
+    document.documentElement.classList.add('js');
+    var you = document.getElementById('you'), btn = document.getElementById('copyBtn'), label = document.getElementById('copyLabel');
+    var say = document.getElementById('say'), agent = document.getElementById('agent'), between = document.getElementById('between');
+    var text = 'Set up foundby.dev in this repo and tell me how people are finding this site.';
+    var timer;
+    function copy(e) {
+      if (e && e.target.closest && e.target.closest('a')) return;
+      var done = function () {
+        btn.classList.add('copied'); label.textContent = 'Copied. Now paste it';
+        if (window.gtag) gtag('event', 'copy_prompt');
+        clearTimeout(timer); timer = setTimeout(function () { btn.classList.remove('copied'); label.textContent = 'Copy prompt'; }, 3200);
+      };
       if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done); else done();
-    });
+    }
+    you.addEventListener('click', copy);
+    btn.addEventListener('click', function (e) { e.stopPropagation(); copy(); });
+
+    // Once, on load: the prompt types itself, then the report arrives. The text is in the
+    // DOM already, so without JS or with reduced motion the page is complete as served.
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { between.classList.remove('pending'); agent.classList.add('show'); return; }
+    say.textContent = '';
+    you.classList.add('typing');
+    var i = 0;
+    setTimeout(function tick() {
+      say.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, text[i - 1] === ' ' ? 55 : 28);
+      else setTimeout(function () { you.classList.remove('typing'); between.classList.remove('pending'); between.classList.add('flow'); setTimeout(function () { between.classList.remove('flow'); agent.classList.add('show'); }, 1500); }, 450);
+    }, 700);
   })();
 </script>
 </body>

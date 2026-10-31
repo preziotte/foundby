@@ -2,7 +2,7 @@
 
 > Ask your coding agent how people find your site. foundby is a free, open-source skill for Claude Code and other coding agents, plus a few Python scripts. It keeps a ledger in your repo of every distinct way a person has ever reached your site (referring hosts, AI assistants, link-preview platforms, in-app browsers, Google Analytics sources, backlinks and web mentions) and each run reports only what is new since the last one. The agent looks up each new host and records what it is.
 
-The prompt to give an agent: "Find out how people are finding my site with foundby.dev"
+The prompt to give an agent: "Set up foundby.dev in this repo and tell me how people are finding this site."
 
 ## Links
 
