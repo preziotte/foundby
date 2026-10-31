@@ -121,7 +121,7 @@ gtag('js', new Date());
   @keyframes arrRing { from { opacity: .7; transform: scale(.6) } to { opacity: 0; transform: scale(2.6) } }
   .arrivals .mark circle.c { transition: r .25s } .arrivals .mark.hit circle.c { r: 3.4 }
   .arrivals .arr-line { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); opacity: 0; animation: arrLine 3.6s linear both }
-  @keyframes arrLine { 0% { stroke-dashoffset: var(--len); opacity: 0 } 8% { opacity: .7 } 30% { stroke-dashoffset: 0; opacity: .7 } 60% { opacity: .7 } 100% { opacity: 0 } }
+  @keyframes arrLine { 0% { stroke-dashoffset: var(--len); opacity: 0 } 8% { opacity: .7 } 30% { stroke-dashoffset: 0; opacity: .7; stroke: var(--muted) } 31% { stroke: var(--primary); opacity: 1 } 42% { stroke: var(--muted); opacity: .7 } 60% { opacity: .7 } 100% { opacity: 0 } }
   .arrivals .arr-dot { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 10px var(--primary); opacity: 0;
     animation: arrDot 3.6s cubic-bezier(.5,0,.8,.4) both }
   @keyframes arrDot { 0% { transform: translate(var(--dx), var(--dy)); opacity: 0 } 8% { opacity: 1 } 30% { transform: translate(0, 0); opacity: 1 } 33% { transform: scale(2.2); opacity: 0 } 100% { opacity: 0 } }
