@@ -1,0 +1,39 @@
+{
+  "site": "foundby.dev",
+  "aliases": [],
+  "own": [
+    "vizz.fm",
+    "agenttraffic.io",
+    "agenttraffic.dev",
+    "preziotte.com",
+    "notforyou.app"
+  ],
+  "ledger": "docs/foundby.md",
+  "cap_days": 60,
+  "mentions": {
+    "queries": [
+      "foundby.dev",
+      "foundby"
+    ],
+    "youtube": true,
+    "skip_github_owners": [
+      "preziotte"
+    ]
+  },
+  "ga": {
+    "property": "561722052",
+    "key_file": "~/.config/gcloud/ga-mcp-key.json",
+    "start": "2026-10-31",
+    "custom_dimensions": false
+  },
+  "edge": {
+    "kind": "cloudfront",
+    "bucket": "logs.foundby.dev",
+    "prefix": "AWSLogs/642340180402/CloudFront/cloudfront/apex/",
+    "start": "2026-10-31"
+  },
+  "bing": {
+    "key_file": "~/.config/bing-webmaster-key.txt",
+    "site_url": "https://foundby.dev/"
+  }
+}

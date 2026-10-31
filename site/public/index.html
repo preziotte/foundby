@@ -19,6 +19,32 @@
 <meta name="twitter:description" content="A free, open-source skill that keeps a ledger of every way people find your site and reports only what is new.">
 <meta name="twitter:image" content="https://foundby.dev/og.png">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YT4RDXRL4F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+window.gtag = window.gtag || function(){ dataLayer.push(arguments); };
+gtag('js', new Date());
+(function () {
+  var ref = document.referrer || '', host = '';
+  try { host = ref ? new URL(ref).hostname : ''; } catch (e) {}
+  var ua = navigator.userAgent || '', inApp = 'none';
+  var apps = [[/TikTok|BytedanceWebview|musical_ly/i,'tiktok'],[/Instagram/i,'instagram'],
+    [/FBAN|FBAV|FB_IAB/i,'facebook'],[/MicroMessenger/i,'wechat'],[/Snapchat/i,'snapchat'],
+    [/Twitter/i,'twitter'],[/LinkedInApp/i,'linkedin'],[/Pinterest/i,'pinterest'],
+    [/Reddit/i,'reddit'],[/Line\//i,'line'],[/GSA\//i,'google_app']];
+  for (var i = 0; i < apps.length; i++) if (apps[i][0].test(ua)) { inApp = apps[i][1]; break; }
+  if (inApp === 'none') {
+    if (/; wv\)/.test(ua)) inApp = 'android_webview';
+    else if (/iPhone|iPad|iPod/.test(ua) && /AppleWebKit/.test(ua) && !/Safari\//.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua)) inApp = 'ios_webview';
+  }
+  // config(), not set(): set() values do not reach the collect call.
+  gtag('config', 'G-YT4RDXRL4F', {
+    referrer_host: host || '(direct)',
+    referrer_full: ref || '(direct)',
+    in_app_browser: inApp
+  });
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <script type="application/ld+json">
