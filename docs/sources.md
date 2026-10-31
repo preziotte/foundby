@@ -42,6 +42,7 @@ YouTube description, a newsletter issue, a Reddit comment) ever reaches the ledg
 - **Not covered**: X (paid API only), Instagram (Graph API searches hashtags only), TikTok
   (Research API is academic-only). Brave Search's API has no free tier any more. GA's
   `in_app_browser` dimension is the only trace of TikTok and Instagram traffic.
+  Sources that could be added, with what has been checked, are in `docs/roadmap.md`.
 
 `mentions.queries` defaults to the domain plus the domain with its dot replaced by a space
 (`vizz.fm`, `vizz fm`). Add the product name if it differs from the domain, and the
