@@ -194,7 +194,7 @@ gtag('js', new Date());
       <a href="#how">How it works</a>
       <a href="#sources">Sources</a>
       <a href="#faq">FAQ</a>
-      <a href="https://github.com/preziotte/foundby">GitHub</a>
+      <a href="https://github.com/preziotte/foundby" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </header>
 
@@ -269,7 +269,7 @@ gtag('js', new Date());
         </tbody>
       </table>
     </div>
-    <p class="muted" style="margin-top:14px;font-size:14.5px">Setup, cost and blind spots of each, including the GA custom-dimension snippet, are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md">docs/sources.md</a>.</p>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Setup, cost and blind spots of each, including the GA custom-dimension snippet, are in <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">docs/sources.md</a>.</p>
   </section>
 
   <section id="use">
@@ -292,17 +292,17 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
     <details><summary>Is anything sent to a server?</summary><p>No. There is no foundby service. The scripts run on your machine, call the public APIs and your own analytics and log bucket with your credentials, and write two files into your repo. Client IPs are never read from logs.</p></details>
     <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
     <details><summary>Why does an agent need to be involved?</summary><p>The scripts find new hosts. The agent fetches each one and decides what it is: a tutorial worth a thank-you, a directory that listed you, a parked domain never to be shown again. That one-line note is what makes the ledger readable, and it is only cheap because the agent is already there.</p></details>
-    <details><summary>What about AI agents crawling my site?</summary><p>foundby records the live-fetch agents, because a person was behind each one. For crawlers, training bots and the full picture of what AI agents do on your site, use <a href="https://agenttraffic.io">agenttraffic</a>, which reads the same logs. foundby is about people; agenttraffic is about agents.</p></details>
+    <details><summary>What about AI agents crawling my site?</summary><p>foundby records the live-fetch agents, because a person was behind each one. For crawlers, training bots and the full picture of what AI agents do on your site, use <a href="https://agenttraffic.io" target="_blank" rel="noopener">agenttraffic</a>, which reads the same logs. foundby is about people; agenttraffic is about agents.</p></details>
     <details><summary>How accurate are the hit counts?</summary><p>They are a magnitude, not a count: edge hits plus GA sessions overlap. The point of the ledger is the first-seen date and the note, not the number.</p></details>
   </section>
 
   <footer>
     <span>foundby is MIT licensed.</span>
-    <a href="https://github.com/preziotte/foundby">GitHub</a>
-    <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md">Sources</a>
-    <a href="https://agenttraffic.io">agenttraffic</a>
+    <a href="https://github.com/preziotte/foundby" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/preziotte/foundby/blob/main/docs/sources.md" target="_blank" rel="noopener">Sources</a>
+    <a href="https://agenttraffic.io" target="_blank" rel="noopener">agenttraffic</a>
     <a href="/llms.txt">llms.txt</a>
-    <span style="margin-left:auto">by <a href="https://preziotte.com">Mathew Preziotte</a></span>
+    <span style="margin-left:auto">by <a href="https://preziotte.com" target="_blank" rel="noopener">Mathew Preziotte</a></span>
   </footer>
 </div>
 <script>
