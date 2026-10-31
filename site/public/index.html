@@ -103,13 +103,14 @@ gtag('js', new Date());
   .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 20px }
   header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0 }
   .logo { display: flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 600; letter-spacing: -0.01em }
-  .logo svg { width: 22px; height: 22px }
+  .logo svg { width: 22px; height: 22px } .logo svg path { transition: opacity .2s } .logo svg circle { transition: r .25s cubic-bezier(.2,.7,.2,1) }
+  .logo:hover { text-decoration: none } .logo:hover svg path { opacity: 1 } .logo:hover svg circle { r: 3.6 }
   nav a { color: var(--muted); margin-left: 22px; font-size: 14.5px } nav a:hover { color: var(--fg); text-decoration: none }
   .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 14px }
   .hero { position: relative; padding: 56px 0 24px }
   .hero-glow { position: absolute; left: -10%; top: -40px; width: 60%; height: 320px; background: radial-gradient(ellipse at 30% 30%, oklch(0.82 0.15 75 / 12%), transparent 65%); pointer-events: none; filter: blur(10px) }
   /* Arrivals: the empty right side of the hero. Sources drift in from the edges, land on the site mark, get named. */
-  .arrivals { position: absolute; right: -40px; top: -10px; width: 480px; height: 430px; pointer-events: none; z-index: 0; overflow: hidden;
+  .arrivals { position: absolute; right: -40px; top: -13px; width: 480px; height: 380px; pointer-events: none; z-index: 0; overflow: hidden;
     mask-image: linear-gradient(90deg, transparent 14%, #000 40%); -webkit-mask-image: linear-gradient(90deg, transparent 14%, #000 40%) }
   .arrivals .field { position: absolute; inset: 0; mask-image: radial-gradient(ellipse 56% 56% at 50% 50%, #000 78%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 56% 56% at 50% 50%, #000 78%, transparent 100%) }
   .arrivals svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible }
@@ -130,7 +131,7 @@ gtag('js', new Date());
   .hero .eyebrow, .hero h1, .hero .lede { position: relative; z-index: 1 }
   @media (max-width: 980px) { .arrivals { display: none } }
   h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 20px; max-width: 760px; text-wrap: balance }
-  .lede { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 0 36px }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 0 56px }
 
   /* The session: your turn (the prompt), then the agent's turn (the report). */
   .turn { position: relative; border: 1px solid var(--border-2); border-radius: 14px; background: var(--card) }
@@ -365,7 +366,10 @@ python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
 python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
 
 # open the ledger viewer
-python3 .claude/skills/foundby/scripts/foundby.py view</pre>
+python3 .claude/skills/foundby/scripts/foundby.py view
+
+# update the skill in place
+python3 .claude/skills/foundby/scripts/foundby.py update</pre>
   </section>
 
   <section id="faq" class="faq">
@@ -377,6 +381,7 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
     <details><summary>Do I need Google Analytics or CDN logs?</summary><p>No. A site with only a domain gets the mention search. GA4, CloudFront logs and Bing backlinks are optional and each one adds a layer. <code>doctor</code> looks at what you have and says which would add the most.</p></details>
     <details><summary>Why does an agent need to be involved?</summary><p>The scripts find new hosts. The agent fetches each one and decides what it is: a tutorial worth a thank-you, a directory that listed you, a parked domain never to be shown again. That one-line note is what makes the ledger readable, and it is only cheap because the agent is already there.</p></details>
     <details><summary>What about AI agents crawling my site?</summary><p>foundby records the live-fetch agents, because a person was behind each one. For crawlers, training bots and the full picture of what AI agents do on your site, use <a href="https://agenttraffic.io" target="_blank" rel="noopener">agenttraffic</a>, which reads the same logs. foundby is about people; agenttraffic is about agents.</p></details>
+    <details><summary>How do I get new versions?</summary><p>Every <code>/foundby</code> run first checks GitHub for a newer version (one request for a six-byte file; nothing about you is sent, and <code>"check_updates": false</code> in <code>foundby.json</code> turns it off). If there is one, the agent says so and offers to update before running. <code>/foundby update</code>, or <code>foundby.py update</code> from a shell, applies it in place: a <code>git pull</code> if the skill is a clone, otherwise the GitHub tarball unpacked over the skill files. Your config and ledger are never touched, and the ledger carries a schema number so an older one is migrated forward.</p></details>
     <details><summary>How accurate are the hit counts?</summary><p>They are a magnitude, not a count: edge hits plus GA sessions overlap. The point of the ledger is the first-seen date and the note, not the number.</p></details>
   </section>
 
@@ -411,7 +416,7 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
     function copy(e) {
       if (e && e.target.closest && e.target.closest('a')) return;
       var done = function () {
-        btn.classList.add('copied'); label.textContent = 'Copied. Now paste it';
+        btn.classList.add('copied'); label.textContent = 'Copied';
         if (window.gtag) gtag('event', 'copy_prompt');
         clearTimeout(timer); timer = setTimeout(function () { btn.classList.remove('copied'); label.textContent = 'Copy prompt'; }, 3200);
       };
@@ -444,12 +449,12 @@ python3 .claude/skills/foundby/scripts/foundby.py view</pre>
     mark.innerHTML = '<span class="ring" id="arrRing"></span><svg viewBox="0 0 24 24" fill="none"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.6" stroke-linecap="round" opacity=".75"/><circle class="c" cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>';
     field.appendChild(mark);
     var ring = mark.querySelector('.ring'), cx, cy, i = Math.floor(Math.random() * names.length), lastA = Math.random() * 4.0;
-    function size() { cx = field.clientWidth * 0.52; cy = field.clientHeight * 0.52; mark.style.left = cx + 'px'; mark.style.top = cy + 'px'; }
+    function size() { cx = field.clientWidth * 0.52; cy = field.clientHeight * 0.51; mark.style.left = cx + 'px'; mark.style.top = cy + 'px'; }
     size(); window.addEventListener('resize', size);
     function spawn(still) {
       /* Walk an arc that skips the headline side, a third of it per step so neighbours never collide. */
       lastA = (lastA + 1.34 + Math.random() * 0.1) % 4.0; var a = lastA - 2.0;
-      var r = 105 + Math.random() * 50, dx = Math.cos(a) * r, dy = Math.sin(a) * r * 0.8;
+      var r = 98 + Math.random() * 46, dx = Math.cos(a) * r, dy = Math.sin(a) * r * 0.8;
       var g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); if (still) g.setAttribute('class', 'still');
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('class', 'arr-line'); line.setAttribute('x1', cx + dx); line.setAttribute('y1', cy + dy); line.setAttribute('x2', cx); line.setAttribute('y2', cy);
