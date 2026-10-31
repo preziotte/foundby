@@ -37,8 +37,11 @@ YouTube description, a newsletter issue, a Reddit comment) ever reaches the ledg
   crowd out real hits) plus the bare domain per locale in `mentions.youtube_langs` (YouTube
   surfaces non-English tutorials only in the viewer's language), three pages each via the
   innertube continuation, then each candidate's watch page is read to confirm the
-  description names the site. Two to three minutes per run; results are fuzzy run to run,
-  so the ledger is the record. `"youtube": false` to turn it off.
+  description names the site. Every video id read is kept in the ledger JSON
+  (`youtube_checked`) and skipped on later runs, so the first run takes two to three
+  minutes and later ones seconds; a description edited after it was checked is missed.
+  Results are fuzzy run to run, so the ledger is the record. `"youtube": false` to turn
+  it off.
 - **Not covered**: X (paid API only), Instagram (Graph API searches hashtags only), TikTok
   (Research API is academic-only). Brave Search's API has no free tier any more. GA's
   `in_app_browser` dimension is the only trace of TikTok and Instagram traffic.

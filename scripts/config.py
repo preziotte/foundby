@@ -11,6 +11,7 @@ paths are resolved relative to the config file's directory.
       "own": ["my-other-site.com"],
       "ledger": "docs/foundby.md",
       "cap_days": 60,
+      "check_updates": true,
       "ga": {"property": "123456789", "key_file": "~/.config/gcloud/ga-key.json",
              "start": "2025-01-01", "custom_dimensions": true,
              "extra_dimensions": [{"dimension": "host_app", "prefix": "app:host=", "label": "?host= embed"}]},
@@ -34,6 +35,7 @@ DEFAULTS = {
     "own": [],
     "ledger": "docs/foundby.md",
     "cap_days": 60,
+    "check_updates": True,  # `foundby.py update --check` fetches VERSION from GitHub; false skips it
     "ga": None,
     "edge": None,
     "bing": None,

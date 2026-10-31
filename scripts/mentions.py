@@ -16,12 +16,15 @@ Sources, each one request and each degrading alone:
   lobsters  Stories linking the domain (404 until the first one exists; that is 0, not a failure).
   youtube   Videos whose description names the site. The Data API cannot search
             descriptions, so the results page is scraped per query and locale and each
-            candidate's watch page is read to confirm. Slow (a few minutes) and fuzzy run
-            to run; the ledger is the record. Turn off with mentions.youtube=false.
+            candidate's watch page is read to confirm. Videos already checked are listed
+            in the ledger JSON (youtube_checked) and skipped, so the first run takes a few
+            minutes and later ones seconds. Fuzzy run to run; the ledger is the record.
+            Turn off with mentions.youtube=false.
 Not covered: X (paid API), Instagram and TikTok (no caption search).
 """
 
 import argparse
+import concurrent.futures as cf
 import datetime as dt
 import json
 import os
@@ -169,31 +172,69 @@ def _yt_search(q, sp, lang, pages=3):
     return vids
 
 
-def youtube(site, queries, m, langs=()):
+def _yt_confirm(v, m):
+    """Read one watch page; a result row when the description names the site, else None."""
+    vid = v["videoId"]
+    page = _yt_page(f"https://www.youtube.com/watch?v={vid}")
+    d = re.search(r'"attributedDescription":\{"content":"((?:[^"\\]|\\.)*)"', page)
+    desc = json.loads('"' + d.group(1) + '"') if d else ""
+    if not m.search(desc):
+        return None
+    pub = re.search(r'"dateText":\{"simpleText":"[^"]*?([A-Z][a-z]{2} \d{1,2}, \d{4})"', page)
+    day = dt.datetime.strptime(pub.group(1), "%b %d, %Y").strftime("%Y-%m-%d") if pub else ""
+    title = "".join(r["text"] for r in v.get("title", {}).get("runs", []))
+    author = "".join(r["text"] for r in v.get("ownerText", {}).get("runs", []))
+    return {"url": f"https://www.youtube.com/watch?v={vid}", "title": f"{author}: {title}"[:120],
+            "date": day, "source": "youtube", "author": author}
+
+
+def youtube(site, queries, m, langs=(), checked=(), seen_out=None):
+    """Searches run in parallel, then the watch pages of candidates not already in
+    `checked` (video ids from earlier runs, kept in the ledger). Every id read this run is
+    added to `seen_out` so the caller can persist it."""
     EN = "en-US,en;q=0.9"
     VIDEO, VIDEO_BY_DATE = "EgIQAQ%3D%3D", "CAISAhAB"
     qs = [(f'"{site}"', VIDEO_BY_DATE, EN), (f'"{site}"', VIDEO, EN)]
     qs += [(q, VIDEO_BY_DATE, EN) for q in queries if q != site]
     qs += [(site, VIDEO_BY_DATE, f"{l};q=0.9") for l in langs]
-    seen, out = set(), []
-    for q, sp, lang in qs:
-        for v in _yt_search(q, sp, lang):
+    def search(args):
+        for attempt in range(2):  # YouTube sometimes serves a results page without data; try once more
+            try:
+                return _yt_search(*args)
+            except RuntimeError as e:
+                err = e
+        return err
+
+    with cf.ThreadPoolExecutor(max_workers=3) as pool:
+        pages = list(pool.map(search, qs))
+    failed = [p for p in pages if isinstance(p, Exception)]
+    if len(failed) == len(pages):
+        raise failed[0]
+    seen, todo = set(), []
+    for vids in pages:
+        if isinstance(vids, Exception):
+            continue
+        for v in vids:
             vid = v["videoId"]
             if vid in seen or len(seen) >= 150:
                 continue
             seen.add(vid)
-            page = _yt_page(f"https://www.youtube.com/watch?v={vid}")
-            d = re.search(r'"attributedDescription":\{"content":"((?:[^"\\]|\\.)*)"', page)
-            desc = json.loads('"' + d.group(1) + '"') if d else ""
-            if not m.search(desc):
-                continue
-            pub = re.search(r'"dateText":\{"simpleText":"[^"]*?([A-Z][a-z]{2} \d{1,2}, \d{4})"', page)
-            day = dt.datetime.strptime(pub.group(1), "%b %d, %Y").strftime("%Y-%m-%d") if pub else ""
-            title = "".join(r["text"] for r in v.get("title", {}).get("runs", []))
-            author = "".join(r["text"] for r in v.get("ownerText", {}).get("runs", []))
-            out.append({"url": f"https://www.youtube.com/watch?v={vid}", "title": f"{author}: {title}"[:120],
-                        "date": day, "source": "youtube", "author": author})
-    return out
+            if vid not in checked:
+                todo.append(v)
+    with cf.ThreadPoolExecutor(max_workers=8) as pool:
+        rows = [r for r in pool.map(lambda v: _yt_confirm(v, m), todo) if r]
+    if seen_out is not None:
+        seen_out.update(v["videoId"] for v in todo)
+    return rows
+
+
+def ledger_checked(cfg):
+    """Video ids earlier runs already read, from the ledger JSON next to the markdown."""
+    path = os.path.splitext(cfg["ledger"])[0] + ".json"
+    try:
+        return set(json.load(open(path)).get("youtube_checked") or [])
+    except (OSError, ValueError):
+        return set()
 
 
 def main():
@@ -207,31 +248,40 @@ def main():
     site, queries = cfg["site"], mc["queries"]
     m = mention_re(queries)
     os.makedirs(a.outdir, exist_ok=True)
+    checked, yt_seen = ledger_checked(cfg), set()
     sources = [
         ("hn", mc["hn"], lambda: hn(site, queries, m)),
         ("reddit", mc["reddit"], lambda: reddit(site, queries, m, mc.get("reddit_json"))),
         ("github", mc["github"], lambda: github(site, queries, m, mc.get("skip_github_owners") or ())),
         ("bluesky", mc["bluesky"], lambda: bluesky(site, queries, m)),
         ("lobsters", mc["lobsters"], lambda: lobsters(site, queries, m)),
-        ("youtube", mc["youtube"], lambda: youtube(site, queries, m, mc.get("youtube_langs") or ())),
+        ("youtube", mc["youtube"], lambda: youtube(site, queries, m, mc.get("youtube_langs") or (), checked, yt_seen)),
     ]
     only = set(a.only.split(",")) if a.only else None
     results, health = [], {}
-    for name, enabled, fn in sources:
-        if only and name not in only:
-            continue
-        if not enabled:
-            health[name] = "off"
-            continue
+
+    def run(fn):
         try:
             rows = fn()
             if a.since:
                 rows = [r for r in rows if not r["date"] or r["date"] >= a.since]
-            results += rows
-            health[name] = len(rows)
+            return rows, None
         except Exception as e:  # noqa: BLE001
-            health[name] = "failed: " + str(e)[:80]
-    json.dump({"results": results, "health": health}, open(os.path.join(a.outdir, "mentions.json"), "w"), indent=1)
+            return [], "failed: " + str(e)[:80]
+
+    active = [(name, fn) for name, enabled, fn in sources if (not only or name in only) and enabled]
+    for name, enabled, _ in sources:
+        if (not only or name in only) and not enabled:
+            health[name] = "off"
+    # every source at once; each one degrades alone
+    with cf.ThreadPoolExecutor(max_workers=len(active) or 1) as pool:
+        outcomes = list(pool.map(lambda nf: run(nf[1]), active))
+    for (name, _), (rows, err) in zip(active, outcomes):
+        results += rows
+        health[name] = err or len(rows)
+    health = {name: health[name] for name, _, _ in sources if name in health}
+    json.dump({"results": results, "health": health, "youtube_checked": sorted(yt_seen)},
+              open(os.path.join(a.outdir, "mentions.json"), "w"), indent=1)
     print("mentions: " + " · ".join(f"{k} {v}" for k, v in health.items()), file=sys.stderr)
 
 

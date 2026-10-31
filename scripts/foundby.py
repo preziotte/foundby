@@ -7,11 +7,16 @@
                                                      pull every source since the last run, fold
                                                      into the ledger, print the report
   foundby.py set <key> [--kind K] [--note N]         classify a row after looking it up
+  foundby.py set --stdin                             many at once: one JSON object per line,
+                                                     {"key","kind","note"} or {"url","kind","note","date"}
   foundby.py mention <url> [--kind K] [--note N] [--date D]
                                                      record a page found by hand or by search
   foundby.py render                                  rewrite the markdown from the JSON
   foundby.py view                                    open the ledger viewer in the browser
   foundby.py window [--full]                         print the window the next run would cover
+  foundby.py update [--check]                        update the skill from GitHub (--check only says
+                                                     whether a newer version exists)
+  foundby.py version                                 print the installed version
 
 Config is foundby.json, found upward from the current directory (or $FOUNDBY_CONFIG).
 """
@@ -25,6 +30,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import urllib.parse
 import urllib.request
@@ -35,6 +41,22 @@ import config as cfgmod  # noqa: E402
 from ledger import KINDS, Ledger, print_report  # noqa: E402
 
 PY = sys.executable or "python3"
+REPO = "preziotte/foundby"
+# realpath so a symlinked install (~/.claude/skills/foundby -> a clone) updates the clone
+SKILL_DIR = os.path.dirname(os.path.realpath(HERE))
+VERSION_FILE = os.path.join(SKILL_DIR, "VERSION")
+# Files the tarball update replaces. Never the user's config or the site.
+SKILL_FILES = ["SKILL.md", "README.md", "LICENSE", "VERSION", "CLAUDE.md", "scripts", "docs"]
+
+
+def installed_version():
+    try:
+        return open(VERSION_FILE).read().strip() or "0.0.0"
+    except OSError:
+        return "0.0.0"
+
+
+VERSION = installed_version()
 
 
 def run_script(name, *args, env=None):
@@ -56,7 +78,7 @@ def cmd_init(a):
         "ledger": a.ledger,
         "cap_days": 60,
         "mentions": {"queries": [site] + ([site.replace(".", " ", 1)] if site.count(".") == 1 else []),
-                     "youtube": True, "skip_github_owners": []},
+                     "youtube": not a.no_youtube, "skip_github_owners": []},
     }
     if a.ga:
         cfg["ga"] = {"property": a.ga, "key_file": cfgmod.GA_DEFAULTS["key_file"], "start": "2025-01-01", "custom_dimensions": False}
@@ -86,7 +108,7 @@ def _todo(label, msg):
 def cmd_doctor(a):
     cfg = cfgmod.load()
     site = cfg["site"]
-    print(f"\nfoundby doctor · {site} · {cfg.path}\n")
+    print(f"\nfoundby {VERSION} doctor · {site} · {cfg.path}\n")
     recs = []
 
     # mentions
@@ -103,7 +125,8 @@ def cmd_doctor(a):
         _ok("reddit", f"reading saved search from {mc['reddit_json']}")
     else:
         _no("reddit", "anonymous search is 403. Save https://www.reddit.com/search.json?q=%22" + urllib.parse.quote(site) + "%22&sort=new&limit=100 from a logged-in browser and set mentions.reddit_json")
-    print(f"  {'on' if mc.get('youtube') else 'off':<5} youtube    description search, {len(mc.get('youtube_langs') or [])} locales, a few minutes per run")
+    print(f"  {'on' if mc.get('youtube') else 'off':<5} youtube    description search (scraped, your domain in the queries), {len(mc.get('youtube_langs') or [])} locales, minutes on the first run")
+    print("        each mention source is a key under \"mentions\" in foundby.json; false turns it off")
     print(f"        queries    {', '.join(mc['queries'])}")
 
     # GA
@@ -201,7 +224,7 @@ def cmd_run(a):
     out = a.outdir
     os.makedirs(out, exist_ok=True)
     skip = set((a.skip or "").split(",")) - {""}
-    print(f"window: edge {w['edge_since']}..{w['edge_until']} · ga {w['ga_since']}..{w['ga_until']} · "
+    print(f"foundby {VERSION} · window: edge {w['edge_since']}..{w['edge_until']} · ga {w['ga_since']}..{w['ga_until']} · "
           f"capped={w['capped']} · last_run={w['last_run']}", file=sys.stderr)
     for f in ("edge.json", "ga.json", "mentions.json", "bing.json"):
         try:
@@ -226,40 +249,74 @@ def cmd_run(a):
 
 # -------------------------------------------------------------- set/mention ----
 
+def _check_kind(kind):
+    if kind and kind not in KINDS:
+        sys.exit(f"kind must be one of {' '.join(KINDS)}, not {kind!r}")
+
+
+def apply_set(led, key, kind=None, note=None):
+    row = led.state["rows"].get(key)
+    if not row:
+        return f"no row {key}"
+    _check_kind(kind)
+    if kind:
+        row["kind"] = kind
+    if note is not None:
+        row["note"] = note
+    return f"{key}: {row['kind']} · {row['note']}"
+
+
+def apply_mention(led, url, kind="blog", note="", date=None):
+    _check_kind(kind)
+    host = led.norm_host(urllib.parse.urlparse(url).netloc)
+    if host == "github.com":
+        host = "github:" + "/".join(urllib.parse.urlparse(url).path.strip("/").split("/")[:2])
+    day = date or dt.date.today().isoformat()
+    row = led.state["rows"].get(host)
+    if row is None:
+        row = led.state["rows"][host] = led.new_row(host, kind, day, "web")
+    if "web" not in row["via"]:
+        row["via"].append("web")
+    if url not in row["pages"]:
+        row["pages"].insert(0, url)
+    if note:
+        row["note"] = note
+    if row["kind"] == "unknown":
+        row["kind"] = kind
+    return f"{host}: {row['kind']} · {row['note']} · {url}"
+
+
 def cmd_set(a):
     led = Ledger(cfgmod.load())
-    row = led.state["rows"].get(a.key)
-    if not row:
-        sys.exit(f"no row {a.key}")
-    if a.kind:
-        if a.kind not in KINDS:
-            sys.exit(f"kind must be one of {' '.join(KINDS)}")
-        row["kind"] = a.kind
-    if a.note is not None:
-        row["note"] = a.note
+    if a.stdin:
+        # one JSON object per line (blank lines ignored); one save at the end
+        for n, line in enumerate(sys.stdin, 1):
+            if not line.strip():
+                continue
+            try:
+                o = json.loads(line)
+            except ValueError:
+                sys.exit(f"stdin line {n}: not JSON: {line.strip()[:80]}")
+            if o.get("url"):
+                print(apply_mention(led, o["url"], o.get("kind") or "blog", o.get("note") or "", o.get("date")))
+            elif o.get("key"):
+                print(apply_set(led, o["key"], o.get("kind"), o.get("note")))
+            else:
+                sys.exit(f"stdin line {n}: needs \"key\" or \"url\"")
+    elif a.key:
+        msg = apply_set(led, a.key, a.kind, a.note)
+        if msg.startswith("no row "):
+            sys.exit(msg)
+        print(msg)
+    else:
+        sys.exit("set needs a key or --stdin")
     led.save()
-    print(f"{a.key}: {row['kind']} · {row['note']}")
 
 
 def cmd_mention(a):
     led = Ledger(cfgmod.load())
-    host = led.norm_host(urllib.parse.urlparse(a.url).netloc)
-    if host == "github.com":
-        host = "github:" + "/".join(urllib.parse.urlparse(a.url).path.strip("/").split("/")[:2])
-    day = a.date or dt.date.today().isoformat()
-    row = led.state["rows"].get(host)
-    if row is None:
-        row = led.state["rows"][host] = led.new_row(host, a.kind, day, "web")
-    if "web" not in row["via"]:
-        row["via"].append("web")
-    if a.url not in row["pages"]:
-        row["pages"].insert(0, a.url)
-    if a.note:
-        row["note"] = a.note
-    if row["kind"] == "unknown":
-        row["kind"] = a.kind
+    print(apply_mention(led, a.url, a.kind, a.note, a.date))
     led.save()
-    print(f"{host}: {row['kind']} · {row['note']} · {a.url}")
 
 
 # -------------------------------------------------------------------- view ----
@@ -329,6 +386,78 @@ def cmd_view(a):
     print(out)
 
 
+# ------------------------------------------------------------------ update ----
+
+def _vtuple(v):
+    return tuple(int(x) for x in re.findall(r"\d+", v)[:3])
+
+
+def latest_version():
+    """Newest version on GitHub, or None when it cannot be reached. One GET for a tiny
+    file; nothing about the user or the ledger is sent."""
+    url = f"https://raw.githubusercontent.com/{REPO}/main/VERSION"
+    req = urllib.request.Request(url, headers={"User-Agent": f"foundby/{VERSION}"})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.read(64).decode().strip() or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _update_git():
+    p = subprocess.run(["git", "-C", SKILL_DIR, "pull", "--ff-only", "--quiet"], capture_output=True, text=True)
+    if p.returncode != 0:
+        sys.exit(f"git pull failed in {SKILL_DIR}:\n{p.stderr.strip()}\nFix it there (local changes?) and rerun, or reclone.")
+
+
+def _update_tarball():
+    url = f"https://github.com/{REPO}/archive/refs/heads/main.tar.gz"
+    with tempfile.TemporaryDirectory() as tmp:
+        tgz = os.path.join(tmp, "foundby.tar.gz")
+        try:
+            urllib.request.urlretrieve(url, tgz)
+        except Exception as e:  # noqa: BLE001
+            sys.exit(f"could not download {url}: {str(e)[:120]}")
+        with tarfile.open(tgz) as tar:
+            try:
+                tar.extractall(tmp, filter="data")
+            except TypeError:  # Python < 3.12
+                tar.extractall(tmp)
+        src = next(os.path.join(tmp, d) for d in os.listdir(tmp) if os.path.isdir(os.path.join(tmp, d)))
+        for name in SKILL_FILES:
+            a, b = os.path.join(src, name), os.path.join(SKILL_DIR, name)
+            if not os.path.exists(a):
+                continue
+            if os.path.isdir(a):
+                shutil.rmtree(b, ignore_errors=True)
+                shutil.copytree(a, b)
+            else:
+                shutil.copy2(a, b)
+
+
+def cmd_update(a):
+    if a.check:
+        cfg = cfgmod.load(required=False)
+        if cfg is not None and cfg.get("check_updates") is False:
+            print(f"foundby {VERSION} · update check disabled in foundby.json")
+            return
+        latest = latest_version()
+        if latest is None:
+            print(f"foundby {VERSION} · could not reach GitHub to check for updates")
+        elif _vtuple(latest) > _vtuple(VERSION):
+            print(f"foundby {VERSION} · {latest} is available · run `foundby.py update`")
+        else:
+            print(f"foundby {VERSION} · up to date")
+        return
+    before = VERSION
+    if os.path.isdir(os.path.join(SKILL_DIR, ".git")) and shutil.which("git"):
+        _update_git()
+    else:
+        _update_tarball()
+    after = installed_version()
+    print(f"foundby {before} -> {after} ({SKILL_DIR})" if after != before else f"foundby {after} · already up to date ({SKILL_DIR})")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -336,13 +465,17 @@ def main():
     i.add_argument("--ga", help="GA4 property id"); i.add_argument("--bucket", help="CloudFront logs bucket")
     i.add_argument("--prefix", help="key prefix in the bucket"); i.add_argument("--edge-start", help="YYYY-MM-DD logging began")
     i.add_argument("--bing", action="store_true"); i.add_argument("--force", action="store_true")
+    i.add_argument("--no-youtube", action="store_true", help="skip the YouTube description search")
     sub.add_parser("doctor")
     r = sub.add_parser("run"); r.add_argument("outdir"); r.add_argument("--full", action="store_true"); r.add_argument("--skip")
-    s = sub.add_parser("set"); s.add_argument("key"); s.add_argument("--kind"); s.add_argument("--note")
+    s = sub.add_parser("set"); s.add_argument("key", nargs="?"); s.add_argument("--kind"); s.add_argument("--note")
+    s.add_argument("--stdin", action="store_true", help="read JSON lines of rows to set or mention")
     m = sub.add_parser("mention"); m.add_argument("url"); m.add_argument("--kind", default="blog"); m.add_argument("--note", default=""); m.add_argument("--date")
     sub.add_parser("render")
     v = sub.add_parser("view"); v.add_argument("--out"); v.add_argument("--no-open", action="store_true")
     w = sub.add_parser("window"); w.add_argument("--full", action="store_true")
+    u = sub.add_parser("update"); u.add_argument("--check", action="store_true")
+    sub.add_parser("version")
     a = ap.parse_args()
     if a.cmd == "init":
         cmd_init(a)
@@ -360,6 +493,10 @@ def main():
         cmd_view(a)
     elif a.cmd == "window":
         print(json.dumps(Ledger(cfgmod.load()).window(a.full)))
+    elif a.cmd == "update":
+        cmd_update(a)
+    elif a.cmd == "version":
+        print(VERSION)
 
 
 if __name__ == "__main__":

@@ -28,7 +28,12 @@ The deliverable is the skill; state lives in the user's repo as `docs/foundby.md
 ## Layout
 
 - `SKILL.md`: the agent-facing skill (install this directory as the skill).
-- `scripts/foundby.py`: the CLI (`init`, `doctor`, `run`, `set`, `mention`, `render`, `view`).
+- `scripts/foundby.py`: the CLI (`init`, `doctor`, `run`, `set`, `mention`, `render`, `view`,
+  `update`, `version`).
+- `VERSION`: the release number, read by the CLI and fetched raw from GitHub by
+  `update --check`. Bump it in every release commit that changes `scripts/` or `SKILL.md`;
+  users only hear about a change if the number moves. `SCHEMA` in `ledger.py` is the
+  ledger JSON shape: bump it only when a field changes meaning, and migrate in `_load`.
 - `scripts/ledger.py`: folding, classification, merge, markdown render.
 - `scripts/edge.py`, `ga.py`, `mentions.py`, `bing.py`: one source each, one JSON each.
 - `scripts/config.py`: `foundby.json` lookup and defaults.

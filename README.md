@@ -37,15 +37,26 @@ stay on your machine.
 
 ## Install
 
-Copy or clone this directory into your project's skills folder:
+In one project, as plain files committed with the repo (no nested git repo):
 
 ```
-git clone https://github.com/preziotte/foundby .claude/skills/foundby
+git clone --depth 1 https://github.com/preziotte/foundby .claude/skills/foundby && rm -rf .claude/skills/foundby/.git
 ```
 
-Or install it once for every project: clone anywhere and symlink into `~/.claude/skills/foundby`.
+Or once for every project: clone anywhere and symlink it into `~/.claude/skills/foundby`.
+
+```
+git clone https://github.com/preziotte/foundby ~/src/foundby && ln -s ~/src/foundby ~/.claude/skills/foundby
+```
 
 Requirements: Python 3.10+. `pip install cryptography` if you wire Google Analytics.
+
+Updating: `foundby.py update` brings the skill to the latest version in place (`git pull`
+for the symlinked clone, the GitHub tarball over the skill files for the in-repo copy). Each run
+first checks whether one exists (one request for the `VERSION` file on GitHub; nothing is
+sent) and the agent offers it before running. `"check_updates": false` in `foundby.json`
+turns the check off. The ledger JSON carries a `schema` number, so an older ledger is
+migrated forward when the format changes.
 `gh auth login` for GitHub code search. The aws CLI for CloudFront logs.
 
 ## Use
@@ -57,6 +68,8 @@ In Claude Code, in your site's repo:
 - `/foundby` refreshes the ledger and reports what is new. The agent looks up the new
   people-shaped rows and records what they are.
 - `/foundby open` opens the ledger viewer in your browser.
+- `/foundby update` updates the skill. Every `/foundby` run also checks first and offers
+  the update if there is one.
 
 Without an agent, the scripts run on their own. The agent's job is the lookup step
 (visiting each new host and writing the one-line note); without one, you do that with `set`.
@@ -69,11 +82,14 @@ python3 .claude/skills/foundby/scripts/foundby.py doctor
 # fetch, fold into docs/foundby.md, print what is new (scratch dir holds the raw pulls)
 python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
 
-# record what a new host turned out to be
+# record what a new host turned out to be (or many at once: set --stdin, one JSON object per line)
 python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
 
 # open the ledger viewer
 python3 .claude/skills/foundby/scripts/foundby.py view
+
+# update the skill (git pull if it is a clone, otherwise the GitHub tarball over the skill files)
+python3 .claude/skills/foundby/scripts/foundby.py update
 ```
 
 ## Sources

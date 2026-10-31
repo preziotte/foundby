@@ -27,6 +27,7 @@ path inside the user's repo.
 - `setup [site]`: first-time wiring for a site (Set it up). Also do this when `run` says no
   `foundby.json` was found.
 - `--full`: rebuild the ledger from the start of the configured sources. Rare.
+- `update`: update the skill to the latest version (Keep it current) without a run.
 
 ## Set it up
 
@@ -34,11 +35,21 @@ The goal is a `foundby.json` that reads every source the user can reasonably wir
 clear statement of what each unwired source would add for *this* site. Keep it short; the
 user can always run `/foundby setup` again.
 
+0. If this skill dir is a fresh clone sitting inside the user's repo (it has its own
+   `.git` and the repo root is above it), delete that `.git` so the skill is committed as
+   plain files like any other skill; `foundby.py update` handles both this and a real
+   clone. Leave it alone when the skill dir is a symlink or lives outside the repo.
 1. If there is no `foundby.json`, work out the site: the repo's config (`SITE_ORIGIN`,
-   `metadataBase`, `package.json` homepage, a CNAME file) or ask. Then
-   `foundby.py init <site>` in the repo root. Add `--ga <property id>` and
-   `--bucket <logs bucket> --prefix <prefix> --edge-start YYYY-MM-DD` if you can find them in
-   the repo (Terraform, deploy scripts, analytics config); `--bing` if a Bing key file exists.
+   `metadataBase`, `package.json` homepage, a CNAME file) or ask. Ask one question before
+   writing it: run the YouTube description search? Say what it is in a sentence (YouTube
+   has no description API, so results pages are scraped with the domain in the query and
+   each candidate video page is read; a few minutes on the first run, seconds after). Then
+   `foundby.py init <site>` in the repo root, with `--no-youtube` if they said no. Add
+   `--ga <property id>` and `--bucket <logs bucket> --prefix <prefix> --edge-start YYYY-MM-DD`
+   if you can find them in the repo (Terraform, deploy scripts, analytics config); `--bing`
+   if a Bing key file exists. The other mention searches (HN, GitHub, Bluesky, Lobsters)
+   are single API requests and stay on; mention once that each is a key under `mentions`
+   in `foundby.json` and `false` turns it off.
 2. `foundby.py doctor`. It checks each source's credential, reaches the GA property if there
    is one, prints the 90-day channel mix, and ends with a numbered list of recommendations
    specific to this property (for example: Direct is 40% of sessions and there are no edge
@@ -59,18 +70,41 @@ user can always run `/foundby setup` again.
 6. Add a line to the repo's CLAUDE.md pointing at the ledger and `/foundby`, and commit the
    ledger files if the user commits.
 
+## Keep it current
+
+Before every run (not for `open`):
+
+```bash
+python3 <skill dir>/scripts/foundby.py update --check
+```
+
+One GET for the `VERSION` file on GitHub; nothing about the user or the ledger is sent,
+and `"check_updates": false` in `foundby.json` turns it off. If it says a newer version is
+available, tell the user in one line and ask whether to update first. On yes,
+`foundby.py update` (a `git pull` when the skill dir is a clone, otherwise the GitHub
+tarball unpacked over the skill files only; `foundby.json` and the ledger are never
+touched), then continue with the run. If it says it could not reach GitHub, or is up to
+date, say nothing and carry on.
+
 ## Run it
 
 ```bash
 python3 <skill dir>/scripts/foundby.py run <outdir>
 ```
 
+Before launching it, tell the user in one line what is about to happen, naming the
+sources this site has wired: "Pulling CloudFront logs and GA since Oct 22, then searching
+HN, GitHub, Bluesky and YouTube for mentions." Give the command a specific description too
+(what it pulls, not "running foundby"). Nothing is shown while it runs, so that line is
+the only progress indicator. The first run on a site, and `setup`, take a few minutes
+because every YouTube candidate is read once; say so. Later runs take well under a
+minute.
+
 One command: computes the window, pulls edge logs (if configured), GA distinct sources and
 custom dimensions (if configured), searches for mentions (HN, Reddit, GitHub code, Bluesky,
 Lobsters, YouTube descriptions), tries Bing inbound links (if configured), folds everything
 into the ledger, rewrites the markdown, and prints the report. Sources degrade
-independently; the report's `sources:` line says which ran. The YouTube search takes a few
-minutes; that is expected.
+independently; the report's `sources:` line says which ran.
 
 ## Then do the lookup step
 
@@ -82,16 +116,24 @@ the note from the report line. For the rest, in parallel, up to about 15 per run
 1. `WebFetch` the host root: what is the site, what language, does the home page mention us.
 2. If that is inconclusive and the row looks like a real place, `WebSearch`
    `site:<host> <site>` (or `"<site>" <host>`) to find the page that links us.
-3. Record it:
+3. Record them all in one command, not one per row, so the user approves once:
    ```bash
-   python3 <skill dir>/scripts/foundby.py set <key> --kind <kind> --note "<one line>"
+   python3 <skill dir>/scripts/foundby.py set --stdin <<'EOF'
+   {"key": "skinnypuppy.eu", "kind": "blog", "note": "Fan site, links from an inner page"}
+   {"key": "parked-thing.xyz", "kind": "junk", "note": "parked domain"}
+   {"url": "https://example.org/post", "kind": "blog", "note": "Tutorial that credits us", "date": "2026-10-20"}
+   EOF
    ```
+   A line with `key` classifies an existing row; a line with `url` records a mention
+   (same as `foundby.py mention`). The single-row form is
+   `foundby.py set <key> --kind <kind> --note "<one line>"`.
    Kinds: search ai social forum video blog directory award newsletter docs own app unfurler
    agent tool monitor junk unknown. Leave `unknown` with a note when the fetch fails (403,
    404, parked) so it is not retried every run.
 
 Also, once per run, do one brand-mention search, `"<site>" -site:<site>` in extended mode,
-and record any page the ledger does not already hold (grep the markdown for the URL first):
+and record any page the ledger does not already hold (grep the markdown for the URL first)
+as a `url` line in the same `set --stdin` batch, or on its own:
 
 ```bash
 python3 <skill dir>/scripts/foundby.py mention <url> --kind <kind> --note "<one line>" [--date YYYY-MM-DD]

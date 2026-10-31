@@ -16,6 +16,7 @@ import datetime as dt
 import json
 import os
 import re
+import sys
 import urllib.parse
 
 KINDS = ["search", "ai", "social", "forum", "video", "blog", "directory", "award", "newsletter",
@@ -106,6 +107,10 @@ JUNK_RE = re.compile(
 )
 IP_RE = re.compile(r"^\d+\.\d+\.\d+\.\d+$")
 
+# Shape of the ledger JSON. Bump when a field changes meaning; _load migrates older
+# ledgers forward and refuses newer ones.
+SCHEMA = 1
+
 # Keys that changed name between versions; applied when a ledger is loaded so a rename
 # never shows up as a NEW row.
 KEY_RENAMES = {
@@ -191,7 +196,10 @@ class Ledger:
     # ----------------------------------------------------------- state ----
 
     def _load(self):
-        state = json.load(open(self.json)) if os.path.exists(self.json) else {"last_run": None, "rows": {}}
+        state = json.load(open(self.json)) if os.path.exists(self.json) else {"schema": SCHEMA, "last_run": None, "rows": {}}
+        if state.get("schema", 1) > SCHEMA:
+            sys.exit(f"{self.json} was written by a newer foundby (schema {state['schema']}; this one reads {SCHEMA}). Run `foundby.py update`.")
+        state["schema"] = SCHEMA
         for old, new in KEY_RENAMES.items():
             if old in state["rows"]:
                 if new in state["rows"]:
@@ -343,6 +351,8 @@ class Ledger:
         mn = read("mentions.json")
         if mn:
             health["mentions"] = " ".join(f"{k}:{v}" for k, v in mn.get("health", {}).items())
+            if mn.get("youtube_checked"):
+                state["youtube_checked"] = sorted(set(state.get("youtube_checked") or []) | set(mn["youtube_checked"]))
             for r in mn.get("results", []):
                 u = r["url"]
                 if r["source"] == "github":
