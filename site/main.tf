@@ -191,23 +191,22 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 # Search Console (domain property) and Bing Webmaster verification live here so a
-# rebuild keeps them. Fill the values on launch day and uncomment.
-#
-# resource "aws_route53_record" "apex_txt" {
-#   zone_id = data.aws_route53_zone.zone.zone_id
-#   name    = var.domain_name
-#   type    = "TXT"
-#   ttl     = 300
-#   records = ["google-site-verification=REPLACE_ME"]
-# }
-#
-# resource "aws_route53_record" "bing_verification" {
-#   zone_id = data.aws_route53_zone.zone.zone_id
-#   name    = "REPLACE_ME.${var.domain_name}"
-#   type    = "CNAME"
-#   ttl     = 300
-#   records = ["verify.bing.com"]
-# }
+# rebuild keeps them.
+resource "aws_route53_record" "apex_txt" {
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = var.domain_name
+  type    = "TXT"
+  ttl     = 300
+  records = ["google-site-verification=Yo1SgCojQ4TmTcrYhezjRvNl4DRNOx6_HqbV5v4BSe4"]
+}
+
+resource "aws_route53_record" "bing_verification" {
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = "b53d3799493c74fa4f0f370ed7f87173.${var.domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["verify.bing.com"]
+}
 
 # ---------------------------------------------------------------------------
 # CloudFront
