@@ -122,12 +122,16 @@ Perplexity-User: a person asked an assistant about the site right then).
 user-selected fields is fine; the header line is parsed). Then:
 
 ```json
-"edge": {"kind": "cloudfront", "bucket": "logs.example.com", "prefix": "cloudfront/apex/",
+"edge": {"kind": "cloudfront", "bucket": "logs.example.com",
+         "prefix": "AWSLogs/123456789012/CloudFront/cloudfront/apex/",
          "start": "2026-08-14", "profile": null}
 ```
 
-`prefix` is the key prefix inside the bucket (for logging v2 it looks like
-`AWSLogs/<account>/CloudFront/<prefix>/`). `start` is the day logging began; `--full`
+`prefix` is the full key prefix inside the bucket, everything before the `yyyy/MM/dd` folders.
+Legacy logging writes at the prefix you configured; standard logging v2 nests it under
+`AWSLogs/<account-id>/CloudFront/`, so the value is usually
+`AWSLogs/123456789012/CloudFront/cloudfront/apex/`. `aws s3 ls s3://logs.example.com/` shows
+which; `doctor` lists the bucket root when the prefix finds nothing. `start` is the day logging began; `--full`
 seeds from it and the ledger header shows it. The aws CLI must be able to list the
 bucket; set `profile` if it is not the default. Files are synced per day into a temp dir
 and deleted after the run. Client IPs are never read.

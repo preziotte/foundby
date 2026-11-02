@@ -128,14 +128,35 @@ def parse_logs(path):
                 continue
             with gzip.open(os.path.join(root, fn), "rt", errors="replace") as fh:
                 for line in fh:
+                    # Legacy logging: "#Version" then "#Fields: date time ...". Standard
+                    # logging v2 (plain): a bare space-separated header, "timestamp c-ip ...".
                     if line.startswith("#Fields:"):
                         fields = line.split(":", 1)[1].split()
                         continue
-                    if line.startswith("#") or not line.strip() or not fields:
+                    if line.startswith("#") or not line.strip():
+                        continue
+                    first = line.split(None, 1)[0]
+                    if first in ("timestamp", "date"):
+                        fields = line.split()
+                        continue
+                    if not fields:
                         continue
                     parts = line.rstrip("\n").split("\t")
                     if len(parts) >= len(fields):
                         yield dict(zip(fields, parts))
+
+
+def row_time(row):
+    """UTC naive datetime of a log row: v2 'timestamp' is epoch seconds, legacy has date and time."""
+    if row.get("timestamp"):
+        try:
+            return dt.datetime.fromtimestamp(float(row["timestamp"]), dt.timezone.utc).replace(tzinfo=None)
+        except ValueError:
+            return None
+    try:
+        return dt.datetime.fromisoformat(f"{row.get('date', '')} {row.get('time', '')}")
+    except ValueError:
+        return None
 
 
 def iso(s):
@@ -172,9 +193,8 @@ def main():
         referrers, unfurlers, agents = collections.Counter(), collections.Counter(), collections.Counter()
         agent_vendor, stamps, n = {}, [], 0
         for row in parse_logs(tmp):
-            try:
-                ts = dt.datetime.fromisoformat(f"{row.get('date', '')} {row.get('time', '')}")
-            except ValueError:
+            ts = row_time(row)
+            if ts is None:
                 continue
             if not (since <= ts < until):
                 continue

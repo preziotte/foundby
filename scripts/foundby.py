@@ -193,8 +193,13 @@ def cmd_doctor(a):
             _ok("edge", f"s3://{e['bucket']}/{e.get('prefix') or ''} listable" + (f", logs start {e['start']}" if e.get("start") else ""))
             if not e.get("start"):
                 _todo("edge", "set edge.start (YYYY-MM-DD) to the day logging began so --full can rebuild from it")
-        else:
+        elif p.stderr.strip():
             _no("edge", f"cannot list bucket: {p.stderr.strip()[:100]}")
+        else:
+            top = subprocess.run(["aws", "s3", "ls", f"s3://{e['bucket']}/"] + cmd[4:], capture_output=True, text=True)
+            seen = ", ".join(t.split()[-1] for t in top.stdout.strip().splitlines()[:5]) or "nothing"
+            _no("edge", f"nothing under s3://{e['bucket']}/{e.get('prefix') or ''}. Bucket root holds: {seen}. "
+                        "Logging v2 writes under AWSLogs/<account-id>/CloudFront/<suffix>/; set edge.prefix to that whole path")
 
     # bing
     b = cfg.get("bing")
