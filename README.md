@@ -17,18 +17,18 @@ thread or YouTube tutorial gets found, read and remembered.
 ```
 FOUNDBY · example.com · new since 2026-10-22 (7d window, 184 rows in ledger)
 
-  NEW  blog      skinnypuppy.eu                              25  via edge
+  NEW  blog      annika.dev                                  25  via edge
   NEW  video     youtube.com                                  3  via web  youtube.com/watch?v=...
   NEW  forum     news.ycombinator.com                         9  via edge,web
-  NEW  directory github:someone/awesome-music-tools           0  via web  github.com/someone/awesome-music-tools
+  NEW  directory github:someone/awesome-cli-apps              0  via web  github.com/someone/awesome-cli-apps
   NEW  unfurler  unfurl:Discord                              14  via edge
   junk (3): 185.220.101.4, seo-tools.xyz, translate.goog
-  PAGE forum     reddit.com                                        reddit.com/r/WeAreTheMusicMakers/comments/...
+  PAGE forum     reddit.com                                        reddit.com/r/freelance/comments/...
   SURGE search   duckduckgo.com                              41  was ~2.1/day
 
   sources: edge 2026-10-22..2026-10-29 (168h) · ga 2026-10-22..2026-10-29 · mentions hn:1 github:4 bluesky:2 lobsters:0 youtube:3 · bing API returns no links for this site
 
-  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com
+  to look up (3): annika.dev, news.ycombinator.com, youtube.com
 ```
 
 No hosted service, no account, no telemetry. State is two files in your repo
@@ -83,7 +83,7 @@ python3 .claude/skills/foundby/scripts/foundby.py doctor
 python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
 
 # record what a new host turned out to be (or many at once: set --stdin, one JSON object per line)
-python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
+python3 .claude/skills/foundby/scripts/foundby.py set annika.dev --kind blog --note "Personal blog, links from an inner page"
 
 # open the ledger viewer
 python3 .claude/skills/foundby/scripts/foundby.py view
@@ -111,7 +111,7 @@ are in [docs/sources.md](docs/sources.md).
 ## Why this and not a monitoring service
 
 Mention trackers and backlink tools list hosts. They do not fetch each unknown host,
-decide that one is a Spanish AI-music tutorial worth a thank-you and another is a parked
+decide that one is a Spanish setup tutorial worth a thank-you and another is a parked
 domain never to be shown again, and write that into a ledger you own. That classification
 is the part that makes the report readable, it is agent work, and it only costs you the
 run. The ledger's known-host tables (search engines, AI assistants, directories,

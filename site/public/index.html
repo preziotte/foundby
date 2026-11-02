@@ -280,15 +280,15 @@ gtag('js', new Date());
       <span class="who">your agent · a minute later</span>
 <pre><span class="ln" style="--i:0">FOUNDBY · example.com · new since 2026-10-22 (184 rows in ledger)</span>
 
-<span class="ln" style="--i:1">  <span class="k">NEW</span>   blog       skinnypuppy.eu                           25</span>
+<span class="ln" style="--i:1">  <span class="k">NEW</span>   blog       annika.dev                               25</span>
 <span class="ln" style="--i:2">  <span class="k">NEW</span>   video      youtube.com                               3   <span class="u">youtube.com/watch?v=…</span></span>
 <span class="ln" style="--i:3">  <span class="k">NEW</span>   forum      news.ycombinator.com                      9</span>
-<span class="ln" style="--i:4">  <span class="k">NEW</span>   directory  github:someone/awesome-music-tools        0   <span class="u">github.com/someone/awesome-music-tools</span></span>
+<span class="ln" style="--i:4">  <span class="k">NEW</span>   directory  github:someone/awesome-cli-apps           0   <span class="u">github.com/someone/awesome-cli-apps</span></span>
 <span class="ln" style="--i:5">  <span class="k">NEW</span>   unfurler   unfurl:Discord                           14</span>
 <span class="ln" style="--i:6">  <span class="k">SURGE</span> search     duckduckgo.com                           41   was ~2.1/day</span>
 <span class="ln" style="--i:7">  <span class="d">junk (3): 185.220.101.4, seo-tools.xyz, translate.goog</span></span>
 
-<span class="ln" style="--i:8">  to look up (3): skinnypuppy.eu, news.ycombinator.com, youtube.com</span></pre>
+<span class="ln" style="--i:8">  to look up (3): annika.dev, news.ycombinator.com, youtube.com</span></pre>
     </div>
     <p class="hint pending" id="after">From then on, run <code>/foundby</code> whenever you like. It reports only what is new since the last run. <code>/foundby open</code> shows the whole ledger as a page.</p>
   </section>
@@ -296,7 +296,7 @@ gtag('js', new Date());
   <section id="how">
     <div class="section-head">How it works</div>
     <h2>Scripts find the hosts. Your agent finds out what they are.</h2>
-    <p class="muted" style="max-width:680px">Mention trackers and backlink tools list hosts. They do not open each one, decide that this one is a Spanish AI-music tutorial worth a thank-you and that one is a parked domain never to be shown again, and write that into a file you own. That is the part that makes the report readable, and it is only cheap because the agent is already there.</p>
+    <p class="muted" style="max-width:680px">Mention trackers and backlink tools list hosts. They do not open each one, decide that this one is a Spanish setup tutorial worth a thank-you and that one is a parked domain never to be shown again, and write that into a file you own. That is the part that makes the report readable, and it is only cheap because the agent is already there.</p>
     <div class="grid" style="margin-top:32px">
       <div class="card"><div class="n">01 · remembers</div><h3>A ledger, not a dashboard</h3><p>Every host, agent and platform ever seen, with first-seen date, kind and a note, in <code>docs/foundby.md</code> next to your code. Each run covers exactly the gap since the last one. Junk surfaces once.</p></div>
       <div class="card"><div class="n">02 · explains</div><h3>One line per new host</h3><p>The report ends with the hosts worth a look. The agent fetches each, searches for the page that links you, and records a kind and a one-line note. Hand edits in the markdown stick.</p></div>
@@ -319,17 +319,17 @@ gtag('js', new Date());
           <table>
             <thead><tr><th>key</th><th>kind</th><th>first seen</th><th>hits</th><th>note</th></tr></thead>
             <tbody id="vrows">
-          <tr data-kind="blog"><td class="k new">skinnypuppy.eu</td><td><span class="pill people">blog</span></td><td class="d">2026-10-24</td><td class="n">25</td><td class="note">Fan site, links from a tutorial page</td></tr>
+          <tr data-kind="blog"><td class="k new">annika.dev</td><td><span class="pill people">blog</span></td><td class="d">2026-10-24</td><td class="n">25</td><td class="note">Personal blog, links from a setup tutorial</td></tr>
           <tr data-kind="forum"><td class="k new">news.ycombinator.com</td><td><span class="pill people">forum</span></td><td class="d">2026-10-25</td><td class="n">9</td><td class="note">Show HN thread, 40 comments, questions to answer</td></tr>
           <tr data-kind="video"><td class="k new">youtube.com</td><td><span class="pill people">video</span></td><td class="d">2026-10-23</td><td class="n">3</td><td class="note">Walkthrough video, link in the description</td></tr>
-          <tr data-kind="directory"><td class="k new">github:someone/awesome-music-tools</td><td><span class="pill people">directory</span></td><td class="d">2026-10-26</td><td class="n">0</td><td class="note">Listed under visualizers; description is out of date</td></tr>
+          <tr data-kind="directory"><td class="k new">github:someone/awesome-cli-apps</td><td><span class="pill people">directory</span></td><td class="d">2026-10-26</td><td class="n">0</td><td class="note">Listed under productivity; description is out of date</td></tr>
           <tr data-kind="unfurler"><td class="k new">unfurl:Discord</td><td><span class="pill">unfurler</span></td><td class="d">2026-10-26</td><td class="n">14</td><td class="note">Pasted into a server. Private, count only</td></tr>
-          <tr data-kind="ai"><td class="k">chatgpt.com</td><td><span class="pill">ai</span></td><td class="d">2026-09-02</td><td class="n">61</td><td class="note">Cited in answers about browser visualizers</td></tr>
+          <tr data-kind="ai"><td class="k">chatgpt.com</td><td><span class="pill">ai</span></td><td class="d">2026-09-02</td><td class="n">61</td><td class="note">Cited in answers about invoicing tools for freelancers</td></tr>
           <tr data-kind="ai"><td class="k">perplexity.ai</td><td><span class="pill">ai</span></td><td class="d">2026-09-14</td><td class="n">18</td><td class="note"></td></tr>
-          <tr data-kind="forum"><td class="k">reddit.com</td><td><span class="pill people">forum</span></td><td class="d">2026-08-11</td><td class="n">37</td><td class="note">r/WeAreTheMusicMakers, two threads</td></tr>
+          <tr data-kind="forum"><td class="k">reddit.com</td><td><span class="pill people">forum</span></td><td class="d">2026-08-11</td><td class="n">37</td><td class="note">r/freelance, two threads</td></tr>
           <tr data-kind="directory"><td class="k">producthunt.com</td><td><span class="pill people">directory</span></td><td class="d">2026-07-30</td><td class="n">142</td><td class="note">Launch day, #4 product of the day</td></tr>
-          <tr data-kind="app"><td class="k">app:instagram</td><td><span class="pill">app</span></td><td class="d">2026-08-20</td><td class="n">22</td><td class="note">Bio link in a creator profile; in-app browser, no referrer</td></tr>
-          <tr data-kind="social"><td class="k">mastodon.social</td><td><span class="pill">social</span></td><td class="d">2026-09-28</td><td class="n">6</td><td class="note">Boosted by a synth account</td></tr>
+          <tr data-kind="app"><td class="k">app:instagram</td><td><span class="pill">app</span></td><td class="d">2026-08-20</td><td class="n">22</td><td class="note">Bio link in a designer profile; in-app browser, no referrer</td></tr>
+          <tr data-kind="social"><td class="k">mastodon.social</td><td><span class="pill">social</span></td><td class="d">2026-09-28</td><td class="n">6</td><td class="note">Boosted by an indie-dev account</td></tr>
           <tr data-kind="search" hidden><td class="k">duckduckgo.com</td><td><span class="pill">search</span></td><td class="d">2026-06-02</td><td class="n">410</td><td class="note"></td></tr>
           <tr data-kind="junk" hidden><td class="k">seo-tools.xyz</td><td><span class="pill">junk</span></td><td class="d">2026-10-22</td><td class="n">1</td><td class="note">Scraper. Never shown again</td></tr>
             </tbody>
@@ -374,7 +374,7 @@ python3 .claude/skills/foundby/scripts/foundby.py doctor
 python3 .claude/skills/foundby/scripts/foundby.py run /tmp/foundby
 
 # record what a new host turned out to be
-python3 .claude/skills/foundby/scripts/foundby.py set skinnypuppy.eu --kind blog --note "Fan site, links from an inner page"
+python3 .claude/skills/foundby/scripts/foundby.py set annika.dev --kind blog --note "Personal blog, links from an inner page"
 
 # open the ledger viewer
 python3 .claude/skills/foundby/scripts/foundby.py view

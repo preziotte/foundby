@@ -119,7 +119,7 @@ the note from the report line. For the rest, in parallel, up to about 15 per run
 3. Record them all in one command, not one per row, so the user approves once:
    ```bash
    python3 <skill dir>/scripts/foundby.py set --stdin <<'EOF'
-   {"key": "skinnypuppy.eu", "kind": "blog", "note": "Fan site, links from an inner page"}
+   {"key": "annika.dev", "kind": "blog", "note": "Personal blog, links from an inner page"}
    {"key": "parked-thing.xyz", "kind": "junk", "note": "parked domain"}
    {"url": "https://example.org/post", "kind": "blog", "note": "Tutorial that credits us", "date": "2026-10-20"}
    EOF
