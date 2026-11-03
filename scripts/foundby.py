@@ -213,6 +213,14 @@ def cmd_doctor(a):
 
     led = Ledger(cfg)
     n = len(led.state["rows"])
+    try:
+        ig = subprocess.run(["git", "check-ignore", "-q", os.path.abspath(led.md)], capture_output=True,
+                            cwd=os.path.dirname(os.path.abspath(led.md)) if os.path.isdir(os.path.dirname(os.path.abspath(led.md))) else None)
+        ignored = ig.returncode == 0
+    except OSError:
+        ignored = False
+    if ignored:
+        _todo("ledger", f"{led.md} is gitignored, so the ledger would never be committed; point \"ledger\" in foundby.json at a tracked path")
     print(f"\n  ledger     {led.md} ({n} rows, last run {led.state.get('last_run') or 'never'})")
     if recs:
         print("\n  recommended, in order:")
