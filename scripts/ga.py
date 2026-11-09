@@ -115,9 +115,16 @@ def main():
             out["in_app"] = report(tok, p, a.since, a.until, ["customEvent:in_app_browser"], "sessions")
         # Site-specific custom dimensions whose values are ways in (an embed host
         # parameter, a partner id). Each becomes rows keyed <prefix><value>.
+        # An optional "event" scopes the read to one event name, for a dimension
+        # that only means something on a particular event (e.g. a host reported
+        # by an off-host beacon, where the same dimension carries referrers on
+        # ordinary page_views).
         out["extra"] = []
         for x in g.get("extra_dimensions") or []:
-            rows = report(tok, p, a.since, a.until, [f"customEvent:{x['dimension']}"], x.get("metric", "sessions"))
+            rows = report(
+                tok, p, a.since, a.until,
+                [f"customEvent:{x['dimension']}"], x.get("metric", "sessions"), x.get("event"),
+            )
             out["extra"].append({**x, "rows": rows})
         out["available"] = True
         print(f"ga: {len(out['sources'])} sources" + (f", {len(out.get('referrer_hosts', []))} referrer hosts, "
